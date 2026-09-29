@@ -191,6 +191,13 @@
   .catfilter::-webkit-scrollbar{display:none;}
   .catfilter button{flex:0 0 auto;font-size:12px;padding:6px 12px;border-radius:9px;background:var(--surface-2);color:var(--ink-soft);}
   .catfilter button.on{background:var(--ink);color:var(--surface);}
+  .suggest{display:flex;flex-direction:column;gap:4px;margin:-2px 0 10px;max-height:230px;overflow-y:auto;}
+  .sug{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line);text-align:left;font-size:13px;}
+  .sug:active{border-color:var(--gold);}
+  .sug .sn{color:var(--ink-soft);font-size:12.5px;}
+  .newscard{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;}
+  .sec-head2{font-size:14px;font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;}
+  .sec-head2 .cv{font-size:11px;color:var(--ink-soft);font-weight:400;}
 
   /* ---------- sheets ---------- */
   .scrim{position:fixed;inset:0;background:rgba(46,40,32,.42);z-index:40;display:flex;align-items:flex-end;justify-content:center;}
@@ -395,6 +402,7 @@ function App(){
   const [hot,setHot]=useState(null); const [hotState,setHotState]=useState("idle");
   const [etfInfo,setEtfInfo]=useState(ETF_INFO);
   const [nameMap,setNameMap]=useState({});
+  const [newsCache,setNewsCache]=useState({});
 
   useEffect(()=>{localStorage.setItem(LS,JSON.stringify({watchlist,entries,settings,recent,updatedAt}));},[watchlist,entries,settings,recent,updatedAt]);
   const bump=()=>setUpdatedAt(Date.now());
@@ -409,7 +417,20 @@ function App(){
     catch(e){setCache(p=>({...p,[code]:{data:mockSeries(code),when:todayStr(),demo:true,error:e.message}}));}
   },[cache,settings.finmindToken]);
 
+  const loadNews=useCallback(async(code)=>{
+    const ex=newsCache[code]; if(ex&&ex.when===todayStr()) return;
+    if(!settings.finmindToken){setNewsCache(p=>({...p,[code]:{when:todayStr(),items:[],noToken:true}}));return;}
+    try{
+      const url=`https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockNews&data_id=${encodeURIComponent(code)}&start_date=${daysAgoStr(30)}&token=${encodeURIComponent(settings.finmindToken)}`;
+      const r=await fetch(url); const j=await r.json();
+      const items=(j.data||[]).map(x=>({title:x.title,source:x.source,url:x.link,date:(x.date||"").slice(0,10)}))
+        .filter(x=>x.title).sort((a,b)=>a.date<b.date?1:-1).slice(0,8);
+      setNewsCache(p=>({...p,[code]:{when:todayStr(),items}}));
+    }catch(e){setNewsCache(p=>({...p,[code]:{when:todayStr(),items:[],error:true}}));}
+  },[newsCache,settings.finmindToken]);
+
   useEffect(()=>{if(selected)loadCode(selected);},[selected,settings.finmindToken]);// eslint-disable-line
+  useEffect(()=>{if(selected&&nav==="chart")loadNews(selected);},[selected,nav,settings.finmindToken]);// eslint-disable-line
   useEffect(()=>{watchlist.forEach(w=>{if(!cache[w.code])loadCode(w.code);});},[watchlist,settings.finmindToken]);// eslint-disable-line
   useEffect(()=>{cmpSel.forEach(c=>{if(!cache[c])loadCode(c);});},[cmpSel,settings.finmindToken]);// eslint-disable-line
 
@@ -481,7 +502,7 @@ function App(){
           </button>
         </div>
 
-        {nav==="chart" && <ChartView {...{watchlist,selected,setSelected,cache,chipChg,chartType,setChartType,range,setRange,entries,setSheet,delEntry,etfInfo,onStock:addCode}}/>}
+        {nav==="chart" && <ChartView {...{watchlist,selected,setSelected,cache,chipChg,chartType,setChartType,range,setRange,entries,setSheet,delEntry,etfInfo,onStock:addCode,news:newsCache[selected]}}/>}
         {nav==="compare" && <CompareView {...{watchlist,cmpSel,setCmpSel,toggleCmp,cmpPeriod,setCmpPeriod,cmpLayout,setCmpLayout,cache,etfInfo}}/>}
         {nav==="hot" && <HotView {...{hot,hotState,cache,onPick:(c,n)=>{addCode(c,n);}}}/>}
       </main>
@@ -495,7 +516,7 @@ function App(){
         ))}
       </nav>
 
-      {sheet==="addEtf" && <AddSheet onClose={()=>setSheet(null)} onAdd={addCode} onRemove={removeCode} onRename={renameCode} watchlist={watchlist} recent={recent} resolveName={resolveName}/>}
+      {sheet==="addEtf" && <AddSheet onClose={()=>setSheet(null)} onAdd={addCode} onRemove={removeCode} onRename={renameCode} watchlist={watchlist} recent={recent} resolveName={resolveName} nameMap={nameMap}/>}
       {(sheet==="addEntry"||(sheet&&sheet.mode==="editEntry")) && <EntrySheet onClose={()=>setSheet(null)} onSave={saveEntry} defaultCode={selected} codes={watchlist} cache={cache} entry={sheet&&sheet.mode==="editEntry"?sheet.entry:null}/>}
       {sheet==="settings" && <SettingsSheet onClose={()=>setSheet(null)} settings={settings} setSettings={setSettings} syncStatus={syncStatus}/>}
       {/* 走勢頁的「加入」需可從 ChartView 觸發 */}
@@ -507,7 +528,7 @@ function App(){
 function AddLauncher(){return null;}
 
 /* ---------- 走勢 ---------- */
-function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setChartType,range,setRange,entries,setSheet,delEntry,etfInfo,onStock}){
+function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setChartType,range,setRange,entries,setSheet,delEntry,etfInfo,onStock,news}){
   const cur=cache[selected], series=cur?.data||[];
   const last=series[series.length-1], prev=series[series.length-2];
   const change=(last&&prev)?last.close-prev.close:null;
@@ -597,9 +618,25 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
             : <button className="empty-inline" onClick={()=>setSheet("addEntry")}>還沒有紀錄 — 點這裡記一筆，進場點就會標在走勢圖上</button>}
         </section>
         <InfoPanel code={selected} info={etfInfo[selected]} isEtf={!!etfInfo[selected]} onStock={onStock}/>
+        <NewsPanel news={news}/>
       </div>
     </div>
   </>;
+}
+
+function NewsPanel({news}){
+  if(!news) return <div className="newscard"><div className="sec-head2">相關新聞 <span className="cv">近 30 天</span></div><div className="hint" style={{marginTop:0}}>載入中…</div></div>;
+  if(news.noToken) return <div className="newscard"><div className="sec-head2">相關新聞 <span className="cv">近 30 天</span></div><div className="hint" style={{marginTop:0}}>設定 FinMind token 後，這裡會顯示近 30 天相關新聞。</div></div>;
+  return <div className="newscard">
+    <div className="sec-head2">相關新聞 <span className="cv">近 30 天</span></div>
+    {news.items&&news.items.length
+      ? news.items.map((h,i)=>(
+          <a className="hl" href={h.url||"#"} target="_blank" rel="noreferrer" key={i}>
+            <span className="ht">{h.title}</span>
+            <span className="hs">{h.source||""}{h.date?" · "+h.date.slice(5):""}</span>
+          </a>))
+      : <div className="hint" style={{marginTop:0}}>近期沒有抓到相關新聞。</div>}
+  </div>;
 }
 
 function EntryRow({e,onEdit,onDelete}){
@@ -791,19 +828,27 @@ function HotView({hot,hotState,cache,onPick}){
 /* ---------- Sheets ---------- */
 function Scrim({children,onClose}){return <div className="scrim" onClick={e=>{if(e.target.classList.contains("scrim"))onClose();}}><div className="sheet"><div className="grab"></div>{children}</div></div>;}
 
-function AddSheet({onClose,onAdd,onRemove,onRename,watchlist,recent,resolveName}){
+function AddSheet({onClose,onAdd,onRemove,onRename,watchlist,recent,resolveName,nameMap}){
   const [code,setCode]=useState("");const [name,setName]=useState("");
   useEffect(()=>{const n=resolveName(code); if(n) setName(n);},[code,resolveName(code)]);// eslint-disable-line
+  const q=code.trim(); const qU=q.toUpperCase();
+  const suggestions=q.length>=1 ? Object.entries(nameMap||{})
+    .filter(([c,n])=>c.startsWith(qU)||(n&&n.indexOf(q)>=0))
+    .sort((a,b)=>{const ac=a[0].startsWith(qU)?0:1,bc=b[0].startsWith(qU)?0:1;return ac!==bc?ac-bc:a[0].localeCompare(b[0]);})
+    .slice(0,8) : [];
   return <Scrim onClose={onClose}>
     <h3>加入商品（個股 / ETF）</h3>
     {recent.length>0 && <><div className="hint" style={{marginTop:0,marginBottom:6}}>最近</div><div className="preset" style={{marginBottom:12}}>{recent.map(c=><button key={c} onClick={()=>onAdd(c,"")}>{c}</button>)}</div></>}
     <div className="hint" style={{marginTop:0,marginBottom:6}}>常用</div>
     <div className="preset">{PRESETS.map(([c,n])=><button key={c} disabled={watchlist.some(w=>w.code===c)} style={{opacity:watchlist.some(w=>w.code===c)?.4:1}} onClick={()=>onAdd(c,n)}>{c} {n}</button>)}</div>
-    <div className="hint">或輸入任何台股代碼（個股如 2330、上櫃如 6488 皆可）。</div>
+    <div className="hint">輸入代碼或中文名稱（例如打 2330 或「台積」），從下方選單選取。</div>
     <div className="two" style={{marginTop:12}}>
-      <div className="field"><label>代碼</label><input value={code} onChange={e=>setCode(e.target.value)} placeholder="2330"/></div>
-      <div className="field"><label>名稱（自動帶出）</label><input value={name} onChange={e=>setName(e.target.value)} placeholder="輸入代碼後自動帶出，可修改"/></div>
+      <div className="field"><label>代碼或名稱</label><input value={code} onChange={e=>setCode(e.target.value)} placeholder="2330 或 台積"/></div>
+      <div className="field"><label>名稱（自動帶出）</label><input value={name} onChange={e=>setName(e.target.value)} placeholder="選取後自動帶出，可修改"/></div>
     </div>
+    {suggestions.length>0 && <div className="suggest">
+      {suggestions.map(([c,n])=><button key={c} className="sug" onClick={()=>onAdd(c,n)}><span className="mono">{c}</span><span className="sn">{n}</span></button>)}
+    </div>}
     <button className="primary" onClick={()=>onAdd(code,name)}>加入</button>
     {watchlist.length>0 && <><div className="hint" style={{marginTop:18,marginBottom:8}}>目前關注（可改名 · 刪除需確認）</div>
       <div className="managelist">{watchlist.map(w=><ManageRow key={w.code} w={w} onRename={onRename} onRemove={onRemove}/>)}</div></>}
