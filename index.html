@@ -421,7 +421,7 @@ function App(){
     const ex=newsCache[code]; if(ex&&ex.when===todayStr()) return;
     if(!settings.finmindToken){setNewsCache(p=>({...p,[code]:{when:todayStr(),items:[],noToken:true}}));return;}
     try{
-      const url=`https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockNews&data_id=${encodeURIComponent(code)}&start_date=${daysAgoStr(30)}&token=${encodeURIComponent(settings.finmindToken)}`;
+      const url=`https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockNews&data_id=${encodeURIComponent(code)}&start_date=${daysAgoStr(120)}&token=${encodeURIComponent(settings.finmindToken)}`;
       const r=await fetch(url); const j=await r.json();
       const items=(j.data||[]).map(x=>({title:x.title,source:x.source,url:x.link,date:(x.date||"").slice(0,10)}))
         .filter(x=>x.title).sort((a,b)=>a.date<b.date?1:-1).slice(0,8);
@@ -625,16 +625,23 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
 }
 
 function NewsPanel({news}){
-  if(!news) return <div className="newscard"><div className="sec-head2">相關新聞 <span className="cv">近 30 天</span></div><div className="hint" style={{marginTop:0}}>載入中…</div></div>;
-  if(news.noToken) return <div className="newscard"><div className="sec-head2">相關新聞 <span className="cv">近 30 天</span></div><div className="hint" style={{marginTop:0}}>設定 FinMind token 後，這裡會顯示近 30 天相關新聞。</div></div>;
+  const head=(right)=><div className="sec-head2">相關新聞 <span className="cv">{right}</span></div>;
+  if(!news) return <div className="newscard">{head("載入中")}<div className="hint" style={{marginTop:0}}>載入中…</div></div>;
+  if(news.noToken) return <div className="newscard">{head("")}<div className="hint" style={{marginTop:0}}>設定 FinMind token 後，這裡會顯示相關新聞。</div></div>;
+  const items=news.items||[];
+  const latest=items[0]?.date;
+  const stale=latest && ((Date.now()-new Date(latest+"T00:00:00").getTime())/864e5 > 10);
   return <div className="newscard">
-    <div className="sec-head2">相關新聞 <span className="cv">近 30 天</span></div>
-    {news.items&&news.items.length
-      ? news.items.map((h,i)=>(
-          <a className="hl" href={h.url||"#"} target="_blank" rel="noreferrer" key={i}>
-            <span className="ht">{h.title}</span>
-            <span className="hs">{h.source||""}{h.date?" · "+h.date.slice(5):""}</span>
-          </a>))
+    {head(latest?("更新至 "+latest.slice(5)):"")}
+    {items.length
+      ? <>
+          {items.map((h,i)=>(
+            <a className="hl" href={h.url||"#"} target="_blank" rel="noreferrer" key={i}>
+              <span className="ht">{h.title}</span>
+              <span className="hs">{h.source||""}{h.date?" · "+h.date.slice(5):""}</span>
+            </a>))}
+          {stale && <div className="hint" style={{marginTop:8}}>FinMind 免費新聞資料更新至 {latest}，較新的新聞可能尚未收錄。</div>}
+        </>
       : <div className="hint" style={{marginTop:0}}>近期沒有抓到相關新聞。</div>}
   </div>;
 }
