@@ -1,0 +1,17 @@
+{
+  "updated": "2026-09-29",
+  "source": "FinMind 新聞(30天)＋成交熱度",
+  "window_days": 30,
+  "items": [
+    { "code": "2330",  "name": "台積電",          "score": 100, "news": 210 },
+    { "code": "2454",  "name": "聯發科",          "score": 78,  "news": 96  },
+    { "code": "2317",  "name": "鴻海",            "score": 71,  "news": 88  },
+    { "code": "00878", "name": "國泰永續高股息",   "score": 63,  "news": 74  },
+    { "code": "2382",  "name": "廣達",            "score": 58,  "news": 61  },
+    { "code": "00919", "name": "群益台灣精選高息", "score": 52,  "news": 40  },
+    { "code": "3231",  "name": "緯創",            "score": 49,  "news": 55  },
+    { "code": "2308",  "name": "台達電",          "score": 45,  "news": 47  },
+    { "code": "0050",  "name": "元大台灣50",       "score": 41,  "news": 22  },
+    { "code": "2891",  "name": "中信金",          "score": 37,  "news": 33  }
+  ]
+}
