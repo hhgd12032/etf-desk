@@ -3,15 +3,125 @@
   "source": "FinMind 新聞(30天)＋成交熱度",
   "window_days": 30,
   "items": [
-    { "code": "2330",  "name": "台積電",          "score": 100, "news": 210 },
-    { "code": "2454",  "name": "聯發科",          "score": 78,  "news": 96  },
-    { "code": "2317",  "name": "鴻海",            "score": 71,  "news": 88  },
-    { "code": "00878", "name": "國泰永續高股息",   "score": 63,  "news": 74  },
-    { "code": "2382",  "name": "廣達",            "score": 58,  "news": 61  },
-    { "code": "00919", "name": "群益台灣精選高息", "score": 52,  "news": 40  },
-    { "code": "3231",  "name": "緯創",            "score": 49,  "news": 55  },
-    { "code": "2308",  "name": "台達電",          "score": 45,  "news": 47  },
-    { "code": "0050",  "name": "元大台灣50",       "score": 41,  "news": 22  },
-    { "code": "2891",  "name": "中信金",          "score": 37,  "news": 33  }
+    {
+      "code": "0050",
+      "name": "元大台灣50",
+      "score": 67,
+      "news": 30
+    },
+    {
+      "code": "2454",
+      "name": "聯發科",
+      "score": 56,
+      "news": 8
+    },
+    {
+      "code": "2330",
+      "name": "台積電",
+      "score": 55,
+      "news": 8
+    },
+    {
+      "code": "2303",
+      "name": "聯電",
+      "score": 42,
+      "news": 16
+    },
+    {
+      "code": "3008",
+      "name": "大立光",
+      "score": 38,
+      "news": 16
+    },
+    {
+      "code": "1303",
+      "name": "南亞",
+      "score": 35,
+      "news": 12
+    },
+    {
+      "code": "00981A",
+      "name": "主動統一台股增長",
+      "score": 26,
+      "news": 12
+    },
+    {
+      "code": "00919",
+      "name": "群益台灣精選高息",
+      "score": 19,
+      "news": 9
+    },
+    {
+      "code": "2886",
+      "name": "兆豐金",
+      "score": 17,
+      "news": 8
+    },
+    {
+      "code": "2308",
+      "name": "台達電",
+      "score": 16,
+      "news": 0
+    },
+    {
+      "code": "00929",
+      "name": "復華台灣科技優息",
+      "score": 12,
+      "news": 6
+    },
+    {
+      "code": "2002",
+      "name": "中鋼",
+      "score": 12,
+      "news": 6
+    },
+    {
+      "code": "2881",
+      "name": "富邦金",
+      "score": 11,
+      "news": 5
+    },
+    {
+      "code": "6488",
+      "name": "環球晶",
+      "score": 11,
+      "news": 3
+    },
+    {
+      "code": "3443",
+      "name": "創意",
+      "score": 11,
+      "news": 3
+    },
+    {
+      "code": "2345",
+      "name": "智邦",
+      "score": 10,
+      "news": 3
+    },
+    {
+      "code": "3661",
+      "name": "世芯-KY",
+      "score": 9,
+      "news": 3
+    },
+    {
+      "code": "00940",
+      "name": "元大台灣價值高息",
+      "score": 8,
+      "news": 4
+    },
+    {
+      "code": "0056",
+      "name": "元大高股息",
+      "score": 7,
+      "news": 3
+    },
+    {
+      "code": "2317",
+      "name": "鴻海",
+      "score": 7,
+      "news": 1
+    }
   ]
 }
