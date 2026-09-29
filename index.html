@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>ETF 觀察桌</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<style>
+  :root{
+    --bg:#EBE3D2; --surface:#F6F1E5; --surface-2:#E2D7BF; --ink:#2E2820; --ink-soft:#6E6353;
+    --line:#D6C9AF; --gold:#B07C2B; --rust:#B04635; --pine:#5C7A54; --blue:#6E8AA0;
+    --shadow:0 1px 0 rgba(46,40,32,.04), 0 8px 24px -18px rgba(46,40,32,.5);
+    --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);}
+  body{color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  .mono{font-family:"DM Mono",ui-monospace,monospace;font-feature-settings:"tnum" 1;}
+  .up{color:var(--rust);} .down{color:var(--pine);} .flat{color:var(--ink-soft);}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+  input,textarea,select{font-family:inherit;font-size:16px;}
+  a{color:var(--gold);}
+
+  /* ---------- App shell (RWD) ---------- */
+  .app{min-height:100vh;}
+  .sidebar{display:none;}
+  .main{padding:0 16px 96px;max-width:760px;margin:0 auto;padding-top:calc(12px + var(--safe-t));}
+  .bottomnav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+    display:flex;z-index:30;padding-bottom:var(--safe-b);}
+  .bottomnav button{flex:1;padding:9px 0 8px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink-soft);font-size:11px;}
+  .bottomnav button.on{color:var(--gold);}
+  .bottomnav svg{width:21px;height:21px;}
+
+  @media(min-width:900px){
+    .app{display:grid;grid-template-columns:236px 1fr;}
+    .sidebar{display:flex;flex-direction:column;gap:4px;padding:22px 16px;border-right:1px solid var(--line);
+      position:sticky;top:0;height:100vh;background:var(--surface);}
+    .sidebar .brand{padding:4px 10px 18px;}
+    .sidebar .navitem{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;color:var(--ink-soft);font-size:14px;font-weight:500;}
+    .sidebar .navitem.on{background:var(--surface-2);color:var(--ink);}
+    .sidebar .navitem svg{width:19px;height:19px;}
+    .sidebar .spacer{flex:1;}
+    .bottomnav{display:none;}
+    .main{max-width:1180px;padding:26px 34px 48px;margin:0;}
+  }
+
+  /* ---------- header ---------- */
+  .top{display:flex;align-items:baseline;justify-content:space-between;padding:8px 2px 12px;}
+  .brand{font-size:20px;font-weight:700;letter-spacing:.02em;}
+  .brand small{display:block;font-size:11px;font-weight:400;color:var(--ink-soft);letter-spacing:.06em;margin-top:2px;}
+  .iconbtn{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--surface);box-shadow:var(--shadow);}
+  .iconbtn:active{transform:translateY(1px);}
+  .viewhead{display:flex;justify-content:space-between;align-items:flex-end;margin:2px 2px 14px;}
+  .viewhead h1{font-size:19px;font-weight:700;margin:0;}
+  .viewhead .sub{font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
+
+  /* ---------- chips ---------- */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 14px;scrollbar-width:none;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex:0 0 auto;padding:9px 14px;border-radius:13px;background:var(--surface);box-shadow:var(--shadow);
+        display:flex;flex-direction:column;gap:2px;min-width:82px;border:1.5px solid transparent;}
+  .chip.active{border-color:var(--ink);}
+  .chip .code{font-size:13px;font-weight:500;}
+  .chip .nm{font-size:10px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px;}
+  .chip .chg{font-size:11.5px;}
+  .chip.add{align-items:center;justify-content:center;min-width:46px;color:var(--ink-soft);font-size:20px;}
+
+  /* ---------- chart view ---------- */
+  .cv-grid{display:grid;gap:14px;}
+  @media(min-width:900px){.cv-grid{grid-template-columns:1.7fr 1fr;align-items:start;}}
+  .hero{background:var(--surface);border-radius:18px;padding:18px;box-shadow:var(--shadow);overflow:hidden;}
+  .hero-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .hero-name{font-size:15px;font-weight:700;}
+  .hero-name .sub{font-size:11px;color:var(--ink-soft);font-weight:400;margin-top:1px;}
+  .hero-price{font-size:34px;font-weight:500;line-height:1.05;margin-top:2px;}
+  .hero-chg{font-size:14px;margin-top:2px;}
+  .status{font-size:10.5px;color:var(--ink-soft);text-align:right;}
+  .status.demo{color:var(--gold);} .status.err{color:var(--rust);}
+  .ctrls{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:12px 0 6px;flex-wrap:wrap;}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px;}
+  .seg button{padding:5px 11px;border-radius:8px;font-size:12.5px;color:var(--ink-soft);}
+  .seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(46,40,32,.12);}
+  .ranges button{font-size:12.5px;padding:5px 9px;border-radius:8px;color:var(--ink-soft);}
+  .ranges button.on{color:var(--ink);font-weight:500;background:var(--surface-2);}
+  .chartbox{width:100%;}
+  .chart-empty{height:300px;display:grid;place-items:center;color:var(--ink-soft);font-size:13px;text-align:center;padding:0 24px;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;}
+  .stat{background:var(--surface);border-radius:13px;padding:11px 12px;box-shadow:var(--shadow);}
+  .stat .k{font-size:10.5px;color:var(--ink-soft);}
+  .stat .v{font-size:15px;margin-top:3px;}
+
+  .sec-head{display:flex;justify-content:space-between;align-items:center;margin:2px 2px 10px;}
+  .sec-head h2{font-size:14px;font-weight:700;margin:0;}
+  .addbtn{font-size:12.5px;color:var(--gold);font-weight:500;}
+  .entry{background:var(--surface);border-radius:13px;padding:12px 14px;box-shadow:var(--shadow);margin-bottom:8px;display:flex;align-items:center;gap:12px;}
+  .entry .date{font-size:12px;color:var(--ink-soft);width:74px;flex:0 0 auto;}
+  .entry .mid{flex:1;min-width:0;}
+  .entry .mid .code{font-size:13px;font-weight:500;}
+  .entry .mid .note{font-size:11px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .entry .num{text-align:right;}
+  .entry .num .amt{font-size:14px;} .entry .num .px{font-size:11px;color:var(--ink-soft);margin-top:1px;}
+  .entry .x{color:var(--ink-soft);font-size:18px;padding:2px 4px;}
+  .empty{background:var(--surface);border-radius:13px;padding:22px 16px;text-align:center;color:var(--ink-soft);font-size:12.5px;box-shadow:var(--shadow);line-height:1.6;}
+
+  /* ---------- compare view ---------- */
+  .pickrow{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 12px;scrollbar-width:none;}
+  .pickrow::-webkit-scrollbar{display:none;}
+  .pick{flex:0 0 auto;padding:8px 13px;border-radius:12px;background:var(--surface);box-shadow:var(--shadow);font-size:12.5px;border:1.5px solid transparent;display:flex;gap:7px;align-items:center;}
+  .pick.on{border-color:var(--ink);}
+  .pick .dot{width:9px;height:9px;border-radius:3px;}
+  .cmp-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+  @media(min-width:560px){.cmp-grid{grid-template-columns:1fr 1fr;}}
+  @media(min-width:1050px){.cmp-grid{grid-template-columns:1fr 1fr 1fr;}}
+  .mini{background:var(--surface);border-radius:14px;padding:13px 14px;box-shadow:var(--shadow);}
+  .mini .h{display:flex;justify-content:space-between;align-items:baseline;}
+  .mini .cd{font-size:13px;font-weight:500;} .mini .nm{font-size:10px;color:var(--ink-soft);}
+  .overlaybox{background:var(--surface);border-radius:16px;padding:16px;box-shadow:var(--shadow);}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;}
+  .legend span{display:flex;align-items:center;gap:6px;font-size:12px;}
+  .legend i{width:12px;height:3px;border-radius:2px;display:inline-block;}
+
+  /* ---------- hot view ---------- */
+  .hotcard{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);margin-bottom:8px;overflow:hidden;}
+  .hotrow{padding:12px 14px;display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;cursor:pointer;}
+  .hotrow:active{transform:translateY(1px);}
+  .rank{font-size:18px;color:var(--gold);text-align:center;}
+  .hotmid .cd{font-size:13px;font-weight:500;}
+  .hotmid .nm{font-size:11px;color:var(--ink-soft);}
+  .bar{height:5px;border-radius:3px;background:var(--surface-2);margin-top:7px;overflow:hidden;}
+  .bar>i{display:block;height:100%;background:var(--gold);border-radius:3px;}
+  .metaline{display:flex;gap:10px;align-items:center;margin-top:6px;font-size:10.5px;color:var(--ink-soft);}
+  .tone{display:inline-flex;gap:5px;align-items:center;}
+  .tone .t{display:inline-flex;align-items:center;gap:3px;}
+  .tone b{font-weight:500;}
+  .tdot{width:7px;height:7px;border-radius:50%;display:inline-block;flex:0 0 auto;}
+  .tdot.pos{background:var(--rust);} .tdot.neg{background:var(--pine);} .tdot.neu{background:var(--line);}
+  .hotright{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+  .hotright .chg{font-size:14px;}
+  .gochart{font-size:11px;color:var(--gold);padding:3px 8px;border-radius:8px;background:var(--surface-2);}
+  .headlines{border-top:1px solid var(--line);padding:6px 14px 10px;}
+  .hl{display:flex;gap:9px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);}
+  .hl:last-of-type{border-bottom:none;}
+  .hl .ht{flex:1;min-width:0;font-size:12.5px;line-height:1.4;}
+  .hl .hs{flex:0 0 auto;font-size:10px;color:var(--ink-soft);max-width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .hl .tdot{margin-top:5px;}
+
+  /* ---------- info panel ---------- */
+  .infopanel{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);margin-top:14px;overflow:hidden;}
+  .info-head{width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;font-size:14px;font-weight:700;}
+  .info-head .cv{color:var(--ink-soft);font-size:12px;font-weight:400;}
+  .info-body{padding:0 16px 16px;}
+  .irow{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .irow .k{color:var(--ink-soft);flex:0 0 auto;} .irow .v{text-align:right;}
+  .hold{margin-top:12px;}
+  .hold .cap{font-size:11px;color:var(--ink-soft);margin-bottom:9px;}
+  .hbar{display:grid;grid-template-columns:74px 1fr 44px;gap:8px;align-items:center;margin-bottom:6px;font-size:12px;}
+  .hbar .t{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden;}
+  .hbar .t>i{display:block;height:100%;background:var(--gold);border-radius:3px;}
+  .hbar .w{text-align:right;color:var(--ink-soft);}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;}
+  .tags span{padding:5px 10px;border-radius:9px;background:var(--surface-2);font-size:11.5px;}
+  .feebox{margin-top:12px;padding-top:6px;border-top:1px solid var(--line);}
+  .holdlink{color:var(--gold);background:none;border:none;padding:0;font-size:inherit;text-align:left;cursor:pointer;}
+  .holdlink:active{opacity:.6;}
+
+  /* ---------- sheets ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(46,40,32,.42);z-index:40;display:flex;align-items:flex-end;justify-content:center;}
+  @media(min-width:700px){.scrim{align-items:center;}}
+  .sheet{background:var(--bg);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:8px 20px calc(24px + var(--safe-b));max-height:90vh;overflow-y:auto;}
+  @media(min-width:700px){.sheet{border-radius:20px;max-height:86vh;}}
+  .grab{width:38px;height:4px;border-radius:2px;background:var(--line);margin:8px auto 14px;}
+  @media(min-width:700px){.grab{display:none;}}
+  .sheet h3{font-size:16px;margin:6px 0 14px;font-weight:700;}
+  .field{margin-bottom:13px;}
+  .field label{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:5px;}
+  .field input,.field textarea,.field select{width:100%;padding:11px 12px;border-radius:11px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);outline:none;}
+  .field input:focus,.field textarea:focus{border-color:var(--gold);}
+  .field textarea{min-height:74px;resize:vertical;font-size:12.5px;line-height:1.5;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .primary{width:100%;padding:13px;border-radius:13px;background:var(--ink);color:var(--surface);font-weight:500;font-size:15px;margin-top:6px;}
+  .primary:active{transform:translateY(1px);}
+  .ghost{width:100%;padding:11px;border-radius:12px;color:var(--ink-soft);font-size:13px;margin-top:2px;}
+  .preset{display:flex;flex-wrap:wrap;gap:7px;}
+  .preset button{padding:7px 11px;border-radius:10px;background:var(--surface);border:1.5px solid var(--line);font-size:12px;}
+  .preset button:active{border-color:var(--gold);}
+  .hint{font-size:11px;color:var(--ink-soft);line-height:1.55;margin-top:4px;}
+  .managelist{display:flex;flex-direction:column;gap:6px;}
+  .mrow{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:11px;padding:9px 12px;box-shadow:var(--shadow);}
+  .mrow .mcode{font-size:12.5px;flex:0 0 auto;width:58px;}
+  .mrow .mname{flex:1;font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .mrow .mname-input{flex:1;min-width:0;padding:6px 9px;border-radius:8px;border:1.5px solid var(--gold);background:var(--bg);color:var(--ink);font-size:13px;outline:none;}
+  .macts,.confirmrow{display:flex;align-items:center;gap:6px;flex:0 0 auto;}
+  .confirmrow .chint{font-size:11.5px;color:var(--rust);margin-right:2px;}
+  .mact{padding:7px 9px;border-radius:9px;background:var(--surface-2);font-size:12px;color:var(--ink-soft);display:grid;place-items:center;}
+  .mact svg{width:15px;height:15px;display:block;}
+  .mact:active{transform:translateY(1px);}
+  .mact.ok{color:var(--pine);font-size:14px;}
+  .mact.danger{background:var(--rust);color:#F6F1E5;}
+  .synctag{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-soft);}
+  .dot7{width:7px;height:7px;border-radius:50%;background:var(--ink-soft);}
+  .dot7.on{background:var(--pine);} .dot7.err{background:var(--rust);} .dot7.wait{background:var(--gold);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef, useCallback } = React;
+const LS = "etfDesk.v2";
+
+const PRESETS = [
+  ["0050","元大台灣50"],["006208","富邦台50"],["009816","凱基台灣TOP50"],
+  ["0056","元大高股息"],["00878","國泰永續高股息"],["00919","群益台灣精選高息"],
+  ["00713","元大台灣高息低波"],["00929","復華台灣科技優息"],["00981A","主動統一台股增長"],
+  ["2330","台積電"],["2454","聯發科"],["2317","鴻海"],
+];
+const SERIES_COLORS = ["#B07C2B","#6E8AA0","#5C7A54","#B04635","#8A6D3B","#7C6E9A","#3F7C82","#A6743F"];
+
+// ETF 商品資訊（可編輯快照；市值型放實際權重，高股息放代表成分）。
+// 也可放外部 ./etf-info.json（格式 {items:{...}}）覆蓋這份內建資料。
+const ETF_INFO={
+ "0050":{type:"市值型",index:"臺灣50指數",dividend:"半年配",mgmt:0.15,custody:0.035,expense:0.22,updated:"2026",
+   holdings:[{name:"台積電",w:57},{name:"鴻海",w:5},{name:"聯發科",w:4},{name:"台達電",w:3},{name:"富邦金",w:2},{name:"廣達",w:2},{name:"中華電",w:1.6},{name:"聯電",w:1.4},{name:"國泰金",w:1.4},{name:"中信金",w:1.3}]},
+ "006208":{type:"市值型",index:"臺灣50指數",dividend:"半年配",mgmt:0.15,custody:0.035,expense:0.23,updated:"2026",
+   holdings:[{name:"台積電",w:57},{name:"鴻海",w:5},{name:"聯發科",w:4},{name:"台達電",w:3},{name:"富邦金",w:2},{name:"廣達",w:2},{name:"中華電",w:1.6},{name:"聯電",w:1.4},{name:"國泰金",w:1.4},{name:"中信金",w:1.3}]},
+ "009816":{type:"市值型(累積)",index:"臺灣市值前50",dividend:"不配息",mgmt:0.07,updated:"2026",
+   holdings:[{name:"台積電",w:40},{name:"鴻海",w:7},{name:"聯發科",w:6},{name:"台達電",w:4},{name:"廣達",w:3},{name:"富邦金",w:2.5},{name:"中華電",w:2},{name:"聯電",w:2},{name:"國泰金",w:2},{name:"中信金",w:1.8}]},
+ "0056":{type:"高股息",index:"臺灣高股息指數",dividend:"季配",expense:0.57,updated:"2026",
+   holdings:["聯發科","聯詠","光寶科","華碩","廣達","緯創","技嘉","大聯大","英業達","群光"]},
+ "00878":{type:"高股息(ESG)",index:"MSCI台灣ESG永續高股息",dividend:"季配",expense:0.52,updated:"2026",
+   holdings:["廣達","聯詠","華碩","光寶科","統一","鴻海","台達電","兆豐金","中信金","聯強"]},
+ "00919":{type:"高股息",index:"特選台灣上市上櫃精選高息",dividend:"季配",expense:0.69,updated:"2026",
+   holdings:["聯發科","聯詠","群聯","瑞昱","華碩","廣達","長榮","兆豐金","聯強","可成"]},
+ "00713":{type:"高息低波",index:"特選臺灣高息低波",dividend:"季配",expense:0.50,updated:"2026",
+   holdings:["中華電","統一","台塑","大聯大","聯強","光寶科","遠傳","台灣大","聯詠","仁寶"]},
+ "00929":{type:"科技高息",index:"特選臺灣科技優息",dividend:"月配",expense:0.50,updated:"2026",
+   holdings:["聯發科","聯詠","瑞昱","光寶科","聯強","群光","智邦","技嘉","緯創","可成"]},
+ "00940":{type:"高股息(價值)",index:"臺灣價值高息",dividend:"季配",updated:"2026",
+   holdings:["鴻海","廣達","聯發科","華碩","光寶科","緯創","聯強","大聯大","仁寶","英業達"]},
+ "00981A":{type:"主動型",dividend:"依基金公告",updated:"2026",note:"主動選股，持股與比重變動大，此處僅列近期較大部位供參考。",
+   holdings:["台積電","鴻海","聯發科","廣達","緯創"]},
+};
+
+// 成分股名稱 → 代碼（讓成分可點擊跳去看走勢）
+const NAME2CODE={
+ "台積電":"2330","鴻海":"2317","聯發科":"2454","台達電":"2308","富邦金":"2881","廣達":"2382",
+ "中華電":"2412","聯電":"2303","國泰金":"2882","中信金":"2891","聯詠":"3034","光寶科":"2301",
+ "華碩":"2357","緯創":"3231","技嘉":"2376","大聯大":"3702","英業達":"2356","群光":"2385",
+ "統一":"1216","兆豐金":"2886","聯強":"2347","群聯":"8299","瑞昱":"2379","長榮":"2603",
+ "可成":"2474","台塑":"1301","遠傳":"4904","台灣大":"3045","仁寶":"2324","智邦":"2345",
+};
+
+const todayStr=()=>new Date().toISOString().slice(0,10);
+const daysAgoStr=(n)=>{const d=new Date();d.setDate(d.getDate()-n);return d.toISOString().slice(0,10);};
+const fmt=(n,d=2)=>(n==null||isNaN(n))?"—":Number(n).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtVol=(v)=>v==null?"—":(v>=1e8?(v/1e8).toFixed(1)+"億":v>=1e4?Math.round(v/1e4)+"萬":String(v));
+const RANGE_DAYS={"1M":31,"3M":93,"6M":186,"1Y":372};
+
+function mockSeries(code){
+  let seed=0; for(const c of code) seed=(seed*31+c.charCodeAt(0))>>>0;
+  const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
+  let price=15+(seed%120); const out=[]; const d=new Date(); d.setDate(d.getDate()-400);
+  for(let i=0;i<400;i++){
+    d.setDate(d.getDate()+1); const day=d.getDay(); if(day===0||day===6) continue;
+    const drift=(rnd()-0.47)*price*0.02, open=price, close=Math.max(5,price+drift);
+    const high=Math.max(open,close)*(1+rnd()*0.012), low=Math.min(open,close)*(1-rnd()*0.012);
+    out.push({time:d.toISOString().slice(0,10),open:+open.toFixed(2),high:+high.toFixed(2),low:+low.toFixed(2),close:+close.toFixed(2),volume:Math.round((500+rnd()*4000))*1000});
+    price=close;
+  }
+  return out;
+}
+async function fetchFinMind(code,token){
+  const url=`https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=${encodeURIComponent(code)}&start_date=${daysAgoStr(400)}&token=${encodeURIComponent(token)}`;
+  const res=await fetch(url); if(!res.ok) throw new Error("HTTP "+res.status);
+  const j=await res.json(); if(!j.data||!j.data.length) throw new Error(j.msg||"查無資料");
+  return j.data.map(r=>({time:r.date,open:+r.open,high:+r.max,low:+r.min,close:+r.close,volume:+r.Trading_Volume})).filter(r=>r.close>0).sort((a,b)=>a.time<b.time?-1:1);
+}
+const DEMO_HOT={updated:"示範資料",source:"FinMind 新聞(30天)＋成交熱度",window_days:30,items:[
+  {code:"2330",name:"台積電",score:100,news:210,pos:96,neg:41,headlines:[
+    {title:"台積電先進製程訂單滿載，法人喊買調升目標價",url:"https://finmindtrade.com",source:"經濟日報",date:"09-28",tone:"pos"},
+    {title:"外資示警半導體庫存風險，台積電早盤走弱",url:"https://finmindtrade.com",source:"工商時報",date:"09-27",tone:"neg"},
+    {title:"台積電法說會展望，AI 需求續強",url:"https://finmindtrade.com",source:"鉅亨網",date:"09-26",tone:"pos"}]},
+  {code:"00878",name:"國泰永續高股息",score:82,news:74,pos:40,neg:18,headlines:[
+    {title:"00878 除息在即，填息行情受矚目",url:"https://finmindtrade.com",source:"Yahoo財經",date:"09-28",tone:"pos"}]},
+  {code:"2454",name:"聯發科",score:70,news:96,pos:38,neg:44,headlines:[
+    {title:"聯發科手機晶片競爭加劇，毛利承壓",url:"https://finmindtrade.com",source:"科技新報",date:"09-27",tone:"neg"}]},
+  {code:"00919",name:"群益台灣精選高息",score:61,news:40,pos:22,neg:9},
+  {code:"3231",name:"緯創",score:55,news:55,pos:31,neg:16},
+  {code:"2317",name:"鴻海",score:48,news:88,pos:44,neg:30},
+  {code:"0050",name:"元大台灣50",score:44,news:22,pos:10,neg:6},
+  {code:"00929",name:"復華台灣科技優息",score:39,news:31,pos:17,neg:8},
+]};
+
+/* ---- SVG 迷你走勢 ---- */
+function Spark({data,days=93,color="#B07C2B",w=250,h=54}){
+  if(!data||data.length<2) return <svg width={w} height={h}/>;
+  const cut=daysAgoStr(days); const d=data.filter(x=>x.time>=cut); const pts=d.length?d:data.slice(-30);
+  const ys=pts.map(p=>p.close); const min=Math.min(...ys),max=Math.max(...ys),span=(max-min)||1;
+  const step=w/(pts.length-1);
+  const path=pts.map((p,i)=>`${i===0?"M":"L"}${(i*step).toFixed(1)},${(h-4-((p.close-min)/span)*(h-8)).toFixed(1)}`).join(" ");
+  const rising=ys[ys.length-1]>=ys[0];
+  return <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{display:"block",width:"100%"}}>
+    <path d={path} fill="none" stroke={color||(rising?"#B04635":"#5C7A54")} strokeWidth="1.8"/>
+  </svg>;
+}
+
+/* ---- Firebase 雲端同步 ---- */
+function useCloud(settings,data,applyRemote){
+  const ref=useRef({status:"off",doc:null}); const [status,setStatus]=useState("off"); const t=useRef(null);
+  useEffect(()=>{let cancel=false;
+    (async()=>{
+      if(!settings.cloudSync||!settings.firebaseConfig){setStatus("off");ref.current={status:"off",doc:null};return;}
+      let cfg; try{cfg=JSON.parse(settings.firebaseConfig);}catch(e){setStatus("err");return;}
+      try{setStatus("wait");
+        if(!firebase.apps.length) firebase.initializeApp(cfg);
+        await firebase.auth().signInAnonymously();
+        const uid=firebase.auth().currentUser.uid;
+        const doc=firebase.firestore().collection("etf_tracker").doc(uid);
+        ref.current={status:"on",doc};
+        const snap=await doc.get();
+        if(!cancel&&snap.exists){const rd=snap.data(); if((rd.updatedAt||0)>(data.updatedAt||0)) applyRemote({watchlist:rd.watchlist||[],entries:rd.entries||[],updatedAt:rd.updatedAt||Date.now()});}
+        if(!cancel) setStatus("on");
+      }catch(e){if(!cancel)setStatus("err");}
+    })(); return ()=>{cancel=true;};
+  },[settings.cloudSync,settings.firebaseConfig]);// eslint-disable-line
+  useEffect(()=>{
+    if(ref.current.status!=="on")return; clearTimeout(t.current);
+    t.current=setTimeout(async()=>{try{await ref.current.doc.set({watchlist:data.watchlist,entries:data.entries,updatedAt:data.updatedAt||Date.now()},{merge:true});}catch(e){setStatus("err");}},900);
+  },[data.watchlist,data.entries,data.updatedAt,status]);// eslint-disable-line
+  return status;
+}
+
+/* ================= App ================= */
+function App(){
+  const boot=(()=>{try{return JSON.parse(localStorage.getItem(LS))||{};}catch(e){return {};}})();
+  const [watchlist,setWatchlist]=useState(boot.watchlist||PRESETS.slice(0,4).map(([code,name])=>({code,name,addedAt:Date.now()})));
+  const [entries,setEntries]=useState(boot.entries||[]);
+  const [settings,setSettings]=useState(boot.settings||{finmindToken:"",firebaseConfig:"",cloudSync:false,hotUrl:""});
+  const [recent,setRecent]=useState(boot.recent||[]);
+  const [updatedAt,setUpdatedAt]=useState(boot.updatedAt||0);
+
+  const [cache,setCache]=useState({});
+  const [nav,setNav]=useState("chart");
+  const [selected,setSelected]=useState((boot.watchlist&&boot.watchlist[0]?.code)||"0050");
+  const [chartType,setChartType]=useState("line");
+  const [range,setRange]=useState("6M");
+  const [sheet,setSheet]=useState(null);
+
+  const [cmpSel,setCmpSel]=useState((boot.watchlist||[]).slice(0,3).map(w=>w.code));
+  const [cmpPeriod,setCmpPeriod]=useState("6M");
+  const [cmpLayout,setCmpLayout]=useState("grid");
+
+  const [hot,setHot]=useState(null); const [hotState,setHotState]=useState("idle");
+  const [etfInfo,setEtfInfo]=useState(ETF_INFO);
+  const [nameMap,setNameMap]=useState({});
+
+  useEffect(()=>{localStorage.setItem(LS,JSON.stringify({watchlist,entries,settings,recent,updatedAt}));},[watchlist,entries,settings,recent,updatedAt]);
+  const bump=()=>setUpdatedAt(Date.now());
+
+  const applyRemote=useCallback((rd)=>{if(rd.watchlist)setWatchlist(rd.watchlist);if(rd.entries)setEntries(rd.entries);if(rd.updatedAt)setUpdatedAt(rd.updatedAt);},[]);
+  const syncStatus=useCloud(settings,{watchlist,entries,updatedAt},applyRemote);
+
+  const loadCode=useCallback(async(code)=>{
+    const ex=cache[code]; if(ex&&ex.when===todayStr()&&!ex.error) return;
+    if(!settings.finmindToken){setCache(p=>({...p,[code]:{data:mockSeries(code),when:todayStr(),demo:true}}));return;}
+    try{const data=await fetchFinMind(code,settings.finmindToken);setCache(p=>({...p,[code]:{data,when:todayStr()}}));}
+    catch(e){setCache(p=>({...p,[code]:{data:mockSeries(code),when:todayStr(),demo:true,error:e.message}}));}
+  },[cache,settings.finmindToken]);
+
+  useEffect(()=>{if(selected)loadCode(selected);},[selected,settings.finmindToken]);// eslint-disable-line
+  useEffect(()=>{watchlist.forEach(w=>{if(!cache[w.code])loadCode(w.code);});},[watchlist,settings.finmindToken]);// eslint-disable-line
+  useEffect(()=>{cmpSel.forEach(c=>{if(!cache[c])loadCode(c);});},[cmpSel,settings.finmindToken]);// eslint-disable-line
+
+  /* 熱議榜資料 */
+  useEffect(()=>{
+    if(nav!=="hot"||hot) return;
+    setHotState("loading");
+    const url=settings.hotUrl||"./hot.json";
+    fetch(url,{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json();})
+      .then(j=>{setHot(j);setHotState("ok");})
+      .catch(()=>{setHot(DEMO_HOT);setHotState("demo");});
+  },[nav,settings.hotUrl]);// eslint-disable-line
+  useEffect(()=>{if(hot)hot.items.slice(0,12).forEach(it=>{if(!cache[it.code])loadCode(it.code);});},[hot]);// eslint-disable-line
+  useEffect(()=>{fetch("./etf-info.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.items)setEtfInfo(p=>({...p,...j.items}));}).catch(()=>{});},[]);
+  useEffect(()=>{
+    const base={}; PRESETS.forEach(([c,n])=>{base[c]=n;}); Object.entries(NAME2CODE).forEach(([n,c])=>{if(!base[c])base[c]=n;});
+    setNameMap(m=>({...base,...m}));
+    try{const cs=JSON.parse(localStorage.getItem("etfDesk.names")||"null");
+      if(cs&&cs.map&&cs.when&&(Date.now()-cs.when<6048e5)){setNameMap(m=>({...cs.map,...base,...m}));return;}}catch(e){}
+    const url="https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockInfo"+(settings.finmindToken?("&token="+encodeURIComponent(settings.finmindToken)):"");
+    fetch(url).then(r=>r.ok?r.json():null).then(j=>{
+      if(!j||!j.data||!j.data.length)return;
+      const map={}; j.data.forEach(r=>{if(r.stock_id&&r.stock_name&&!map[r.stock_id])map[r.stock_id]=r.stock_name;});
+      setNameMap(m=>({...map,...base,...m}));
+      try{localStorage.setItem("etfDesk.names",JSON.stringify({when:Date.now(),map}));}catch(e){}
+    }).catch(()=>{});
+  },[settings.finmindToken]);// eslint-disable-line
+
+  const chipChg=(code)=>{const d=cache[code]?.data;if(!d||d.length<2)return null;return (d[d.length-1].close-d[d.length-2].close)/d[d.length-2].close*100;};
+
+  const resolveName=(c)=>nameMap[(c||"").trim().toUpperCase()]||"";
+  const addCode=(code,name)=>{
+    code=code.trim().toUpperCase(); if(!code)return;
+    const nm=(name&&name.trim())||resolveName(code)||code;
+    if(!watchlist.some(w=>w.code===code)){setWatchlist(v=>[...v,{code,name:nm,addedAt:Date.now()}]);bump();}
+    setRecent(v=>[code,...v.filter(c=>c!==code)].slice(0,8));
+    setSelected(code); setNav("chart"); setSheet(null);
+  };
+  const removeCode=(code)=>{setWatchlist(v=>v.filter(w=>w.code!==code));bump();if(selected===code){const r=watchlist.filter(w=>w.code!==code);setSelected(r[0]?.code||"");}};
+  const renameCode=(code,name)=>{setWatchlist(v=>v.map(w=>w.code===code?{...w,name:(name||"").trim()||w.code}:w));bump();};
+  const saveEntry=(e)=>{setEntries(v=>v.some(x=>x.id===e.id)?v.map(x=>x.id===e.id?e:x):[...v,e]);bump();setSheet(null);};
+  const delEntry=(id)=>{setEntries(v=>v.filter(x=>x.id!==id));bump();};
+  const toggleCmp=(code)=>setCmpSel(v=>v.includes(code)?v.filter(c=>c!==code):(v.length<6?[...v,code]:v));
+
+  const NAVS=[["chart","走勢",<path d="M3 3v18h18"/>,],["compare","比較",<g><rect x="4" y="5" width="7" height="14" rx="1"/><rect x="13" y="9" width="7" height="10" rx="1"/></g>],["hot","熱議榜",<g><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/></g>]];
+
+  return (
+    <div className="app">
+      {/* desktop sidebar */}
+      <aside className="sidebar">
+        <div className="brand">ETF 觀察桌<small>定期定額 · 台股/ETF</small></div>
+        {NAVS.map(([k,label,icon])=>(
+          <button key={k} className={"navitem"+(nav===k?" on":"")} onClick={()=>setNav(k)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{icon}</svg>{label}
+          </button>
+        ))}
+        <div className="spacer"></div>
+        <button className="navitem" onClick={()=>setSheet("settings")}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>設定
+        </button>
+      </aside>
+
+      <main className="main">
+        {/* mobile header */}
+        <div className="top" style={{}}>
+          <div className="brand">ETF 觀察桌<small>定期定額 · 台股/ETF</small></div>
+          <button className="iconbtn" onClick={()=>setSheet("settings")} aria-label="設定">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+
+        {nav==="chart" && <ChartView {...{watchlist,selected,setSelected,cache,chipChg,chartType,setChartType,range,setRange,entries,setSheet,delEntry,etfInfo,onStock:addCode}}/>}
+        {nav==="compare" && <CompareView {...{watchlist,cmpSel,toggleCmp,cmpPeriod,setCmpPeriod,cmpLayout,setCmpLayout,cache}}/>}
+        {nav==="hot" && <HotView {...{hot,hotState,cache,onPick:(c,n)=>{addCode(c,n);}}}/>}
+      </main>
+
+      {/* mobile bottom nav */}
+      <nav className="bottomnav">
+        {NAVS.map(([k,label,icon])=>(
+          <button key={k} className={nav===k?"on":""} onClick={()=>setNav(k)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{icon}</svg>{label}
+          </button>
+        ))}
+      </nav>
+
+      {sheet==="addEtf" && <AddSheet onClose={()=>setSheet(null)} onAdd={addCode} onRemove={removeCode} onRename={renameCode} watchlist={watchlist} recent={recent} resolveName={resolveName}/>}
+      {(sheet==="addEntry"||(sheet&&sheet.mode==="editEntry")) && <EntrySheet onClose={()=>setSheet(null)} onSave={saveEntry} defaultCode={selected} codes={watchlist} cache={cache} entry={sheet&&sheet.mode==="editEntry"?sheet.entry:null}/>}
+      {sheet==="settings" && <SettingsSheet onClose={()=>setSheet(null)} settings={settings} setSettings={setSettings} syncStatus={syncStatus}/>}
+      {/* 走勢頁的「加入」需可從 ChartView 觸發 */}
+      <AddLauncher setSheet={setSheet} nav={nav}/>
+    </div>
+  );
+}
+
+function AddLauncher(){return null;}
+
+/* ---------- 走勢 ---------- */
+function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setChartType,range,setRange,entries,setSheet,delEntry,etfInfo,onStock}){
+  const cur=cache[selected], series=cur?.data||[];
+  const last=series[series.length-1], prev=series[series.length-2];
+  const change=(last&&prev)?last.close-prev.close:null;
+  const changePct=(change!=null&&prev)?change/prev.close*100:null;
+  const dir=change==null?"flat":change>0?"up":change<0?"down":"flat";
+  const arrow=change==null?"":change>0?"▲":change<0?"▼":"—";
+  const meta=watchlist.find(w=>w.code===selected);
+  const boxRef=useRef(null);
+
+  useEffect(()=>{
+    const el=boxRef.current; if(!el) return; el.innerHTML="";
+    if(!series.length) return;
+    const cut=daysAgoStr(RANGE_DAYS[range]); const sliced=series.filter(d=>d.time>=cut); if(!sliced.length) return;
+    const cs=getComputedStyle(document.documentElement);
+    const g=n=>cs.getPropertyValue(n).trim();
+    const H=el.clientWidth>=760?440:300;
+    const chart=LightweightCharts.createChart(el,{width:el.clientWidth,height:H,
+      layout:{background:{type:"solid",color:"transparent"},textColor:g("--ink-soft"),fontFamily:"DM Mono, monospace",fontSize:11},
+      grid:{vertLines:{visible:false},horzLines:{color:g("--line")}},
+      rightPriceScale:{borderColor:g("--line")}, timeScale:{borderColor:g("--line"),fixLeftEdge:true,fixRightEdge:true},
+      crosshair:{mode:0,vertLine:{color:g("--ink-soft"),width:1,style:2,labelBackgroundColor:g("--ink")},horzLine:{color:g("--ink-soft"),style:2,labelBackgroundColor:g("--ink")}},
+      handleScroll:{vertTouchDrag:false,horzTouchDrag:true,mouseWheel:true,pressedMouseMove:true},
+      handleScale:{axisPressedMouseMove:true,pinch:true,mouseWheel:true},
+    });
+    let s;
+    if(chartType==="candle"){s=chart.addCandlestickSeries({upColor:g("--rust"),downColor:g("--pine"),borderUpColor:g("--rust"),borderDownColor:g("--pine"),wickUpColor:g("--rust"),wickDownColor:g("--pine")});
+      s.setData(sliced.map(d=>({time:d.time,open:d.open,high:d.high,low:d.low,close:d.close})));}
+    else{s=chart.addLineSeries({color:g("--gold"),lineWidth:2,priceLineVisible:false});s.setData(sliced.map(d=>({time:d.time,value:d.close})));}
+    const marks=entries.filter(e=>e.code===selected&&e.date>=cut).sort((a,b)=>a.date<b.date?-1:1)
+      .map(e=>({time:e.date,position:"belowBar",color:g("--ink"),shape:"arrowUp",text:"定額"+(e.amount?(" $"+Number(e.amount).toLocaleString()):"")}));
+    if(marks.length)s.setMarkers(marks);
+    chart.timeScale().fitContent();
+    const ro=new ResizeObserver(()=>{const h=el.clientWidth>=760?440:300;chart.applyOptions({width:el.clientWidth,height:h});});
+    ro.observe(el);
+    return ()=>{ro.disconnect();chart.remove();};
+  },[selected,chartType,range,cur,entries]);// eslint-disable-line
+
+  const myEntries=entries.filter(e=>e.code===selected).sort((a,b)=>a.date<b.date?1:-1);
+
+  return <>
+    <div className="chips">
+      {watchlist.map(w=>{const c=chipChg(w.code);return (
+        <button key={w.code} className={"chip"+(selected===w.code?" active":"")} onClick={()=>setSelected(w.code)}>
+          <span className="code mono">{w.code}</span><span className="nm">{w.name}</span>
+          <span className={"chg mono "+(c==null?"flat":c>0?"up":c<0?"down":"flat")}>{c==null?"—":(c>0?"+":"")+c.toFixed(2)+"%"}</span>
+        </button>);})}
+      <button className="chip add" onClick={()=>setSheet("addEtf")} aria-label="新增">＋</button>
+    </div>
+
+    <div className="cv-grid">
+      <div>
+        <div className="hero">
+          <div className="hero-head">
+            <div>
+              <div className="hero-name">{meta?.name||selected}<div className="sub mono">{selected}</div></div>
+              <div className={"hero-price mono "+dir}>{last?fmt(last.close):"—"}</div>
+              <div className={"hero-chg mono "+dir}>{change==null?"尚無資料":`${arrow} ${fmt(Math.abs(change))} (${changePct>0?"+":""}${fmt(changePct)}%)`}</div>
+            </div>
+            <div className={"status"+(cur?.demo?" demo":"")+(cur?.error?" err":"")}>{cur?.error?"載入失敗·示範":cur?.demo?"示範資料":last?"收盤 "+last.time:"載入中…"}</div>
+          </div>
+          <div className="ctrls">
+            <div className="seg"><button className={chartType==="line"?"on":""} onClick={()=>setChartType("line")}>折線</button><button className={chartType==="candle"?"on":""} onClick={()=>setChartType("candle")}>K線</button></div>
+            <div className="ranges">{Object.keys(RANGE_DAYS).map(r=><button key={r} className={range===r?"on":""} onClick={()=>setRange(r)}>{r}</button>)}</div>
+          </div>
+          {series.length?<div className="chartbox" ref={boxRef}></div>:<div className="chart-empty">選一檔開始，或到設定貼上 FinMind token 取得真實走勢。</div>}
+        </div>
+        <div className="stats">
+          <div className="stat"><div className="k">開盤</div><div className="v mono">{last?fmt(last.open):"—"}</div></div>
+          <div className="stat"><div className="k">最高</div><div className="v mono up">{last?fmt(last.high):"—"}</div></div>
+          <div className="stat"><div className="k">最低</div><div className="v mono down">{last?fmt(last.low):"—"}</div></div>
+          <div className="stat"><div className="k">成交量</div><div className="v mono">{last?fmtVol(last.volume):"—"}</div></div>
+        </div>
+      </div>
+
+      <div>
+        <div className="sec-head"><h2>我的進場紀錄</h2><button className="addbtn" onClick={()=>setSheet("addEntry")}>＋ 記一筆</button></div>
+        {myEntries.length?myEntries.map(e=><EntryRow key={e.id} e={e} onEdit={ee=>setSheet({mode:"editEntry",entry:ee})} onDelete={delEntry}/>):<div className="empty">這檔還沒有紀錄。<br/>每次扣款後點「記一筆」，進場點就會標在走勢圖上。</div>}
+      </div>
+    </div>
+    <InfoPanel code={selected} info={etfInfo[selected]} isEtf={!!etfInfo[selected]} onStock={onStock}/>
+  </>;
+}
+
+function EntryRow({e,onEdit,onDelete}){
+  const [confirm,setConfirm]=useState(false);
+  return (
+    <div className="entry">
+      <div className="date mono">{e.date}</div>
+      <div className="mid"><div className="code mono">{e.code}</div>{e.note&&<div className="note">{e.note}</div>}</div>
+      {confirm
+        ? <span className="confirmrow">
+            <span className="chint">刪除？</span>
+            <button className="mact" onClick={()=>setConfirm(false)}>取消</button>
+            <button className="mact danger" onClick={()=>onDelete(e.id)}>確定刪除</button>
+          </span>
+        : <>
+            <div className="num"><div className="amt mono">{e.amount?("$"+Number(e.amount).toLocaleString()):"—"}</div><div className="px mono">淨值 {e.nav?fmt(e.nav):"—"}{e.shares?` · ${fmt(e.shares,0)}股`:""}</div></div>
+            <button className="x" onClick={()=>onEdit(e)} aria-label="編輯">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </button>
+            <button className="x" onClick={()=>setConfirm(true)} aria-label="刪除">×</button>
+          </>}
+    </div>
+  );
+}
+
+function InfoPanel({code,info,isEtf,onStock}){
+  const [open,setOpen]=useState(false);
+  const holds=info?.holdings||[];
+  const weighted=holds.length&&typeof holds[0]==="object";
+  const maxW=weighted?Math.max(...holds.map(h=>h.w||0),1):1;
+  const name=(n)=>{const c=NAME2CODE[n];return c
+    ? <button className="holdlink mono" onClick={()=>onStock(c,n)}>{n} ›</button>
+    : <span className="mono">{n}</span>;};
+  return (
+    <div className="infopanel">
+      <button className="info-head" onClick={()=>setOpen(o=>!o)}>
+        <span>商品資訊 · 成分與費用</span>
+        <span className="cv">{isEtf?(info.type||"ETF"):"個股"} {open?"▲":"▼"}</span>
+      </button>
+      {open && <div className="info-body">
+        {isEtf ? <>
+          {info.index && <div className="irow"><span className="k">追蹤指數</span><span className="v">{info.index}</span></div>}
+          {info.dividend && <div className="irow"><span className="k">配息</span><span className="v">{info.dividend}</span></div>}
+          <div className="irow"><span className="k">內扣費用</span><span className="v mono">
+            {info.mgmt!=null?`經理 ${info.mgmt}%`:""}{info.custody!=null?` · 保管 ${info.custody}%`:""}{info.expense!=null?`${info.mgmt!=null?"（總約 "+info.expense+"%）":"總約 "+info.expense+"%"}`:""}{info.mgmt==null&&info.expense==null?"—":""}
+          </span></div>
+          {holds.length>0 && <div className="hold">
+            <div className="cap">前 {holds.length} 大成分（約略快照{info.updated?" "+info.updated:""}，權重會變動 · 點名稱看該股走勢）</div>
+            {weighted
+              ? holds.map((h,i)=>(<div className="hbar" key={i}>{name(h.name)}<span className="t"><i style={{width:((h.w||0)/maxW*100)+"%"}}></i></span><span className="w mono">{h.w}%</span></div>))
+              : <div className="tags">{holds.map((n,i)=><span key={i}>{name(n)}</span>)}</div>}
+          </div>}
+          {info.note && <div className="hint" style={{marginTop:8}}>{info.note}</div>}
+        </> : <div className="irow" style={{borderBottom:"none"}}><span className="k">類型</span><span className="v">個股（無成分股）</span></div>}
+
+        <div className="feebox">
+          <div className="irow"><span className="k">交易手續費</span><span className="v">0.1425%（上限，多有折讓；定期定額常 1 元或超低）</span></div>
+          <div className="irow" style={{borderBottom:"none"}}><span className="k">證券交易稅</span><span className="v">{isEtf?"0.1%":"0.3%"}（賣出時，{isEtf?"ETF":"個股"}）</span></div>
+        </div>
+        <div className="hint" style={{marginTop:8}}>費用為市場通則與約略資料，實際以券商與投信最新公告為準。</div>
+      </div>}
+    </div>
+  );
+}
+
+/* ---------- 比較 ---------- */
+function CompareView({watchlist,cmpSel,toggleCmp,cmpPeriod,setCmpPeriod,cmpLayout,setCmpLayout,cache}){
+  const overlayRef=useRef(null);
+  const picked=cmpSel.map(c=>({code:c,meta:watchlist.find(w=>w.code===c),data:cache[c]?.data||[]}));
+
+  useEffect(()=>{
+    if(cmpLayout!=="overlay")return; const el=overlayRef.current; if(!el)return; el.innerHTML="";
+    const cs=getComputedStyle(document.documentElement); const g=n=>cs.getPropertyValue(n).trim();
+    const H=el.clientWidth>=760?420:300; const cut=daysAgoStr(RANGE_DAYS[cmpPeriod]);
+    const chart=LightweightCharts.createChart(el,{width:el.clientWidth,height:H,
+      layout:{background:{type:"solid",color:"transparent"},textColor:g("--ink-soft"),fontFamily:"DM Mono, monospace",fontSize:11},
+      grid:{vertLines:{visible:false},horzLines:{color:g("--line")}},
+      rightPriceScale:{borderColor:g("--line")},timeScale:{borderColor:g("--line")},
+      handleScroll:{vertTouchDrag:false,horzTouchDrag:true}, });
+    picked.forEach((p,i)=>{
+      const d=p.data.filter(x=>x.time>=cut); if(d.length<2)return; const base=d[0].close;
+      const s=chart.addLineSeries({color:SERIES_COLORS[i%SERIES_COLORS.length],lineWidth:2,priceLineVisible:false,lastValueVisible:false});
+      s.setData(d.map(x=>({time:x.time,value:+(x.close/base*100).toFixed(2)})));
+    });
+    chart.timeScale().fitContent();
+    const ro=new ResizeObserver(()=>chart.applyOptions({width:el.clientWidth}));ro.observe(el);
+    return ()=>{ro.disconnect();chart.remove();};
+  },[cmpLayout,cmpPeriod,cmpSel,cache]);// eslint-disable-line
+
+  const periodChg=(data)=>{const cut=daysAgoStr(RANGE_DAYS[cmpPeriod]);const d=data.filter(x=>x.time>=cut);if(d.length<2)return null;return (d[d.length-1].close-d[0].close)/d[0].close*100;};
+
+  return <>
+    <div className="viewhead"><div><h1>比較</h1><div className="sub">勾選多檔（最多 6），同期間並排或疊圖</div></div>
+      <div className="seg"><button className={cmpLayout==="grid"?"on":""} onClick={()=>setCmpLayout("grid")}>網格</button><button className={cmpLayout==="overlay"?"on":""} onClick={()=>setCmpLayout("overlay")}>疊圖</button></div>
+    </div>
+    <div className="pickrow">
+      {watchlist.map((w,i)=>{const on=cmpSel.includes(w.code);const ci=cmpSel.indexOf(w.code);return (
+        <button key={w.code} className={"pick"+(on?" on":"")} onClick={()=>toggleCmp(w.code)}>
+          <span className="dot" style={{background:on?SERIES_COLORS[ci%SERIES_COLORS.length]:"var(--line)"}}></span>
+          <span className="mono">{w.code}</span><span style={{color:"var(--ink-soft)"}}>{w.name}</span>
+        </button>);})}
+    </div>
+    <div className="ranges" style={{margin:"0 2px 14px"}}>
+      {Object.keys(RANGE_DAYS).map(r=><button key={r} className={cmpPeriod===r?"on":""} onClick={()=>setCmpPeriod(r)} style={{marginRight:6}}>{r}</button>)}
+    </div>
+
+    {cmpSel.length===0 ? <div className="empty">先在上面勾選要比較的商品。</div> :
+      cmpLayout==="grid" ?
+      <div className="cmp-grid">
+        {picked.map((p,i)=>{const chg=periodChg(p.data);return (
+          <div className="mini" key={p.code}>
+            <div className="h"><div><span className="cd mono">{p.code}</span> <span className="nm">{p.meta?.name}</span></div>
+              <span className={"mono "+(chg==null?"flat":chg>0?"up":"down")} style={{fontSize:13}}>{chg==null?"—":(chg>0?"+":"")+chg.toFixed(1)+"%"}</span></div>
+            <div style={{marginTop:8}}><Spark data={p.data} days={RANGE_DAYS[cmpPeriod]} color={SERIES_COLORS[i%SERIES_COLORS.length]} h={60}/></div>
+          </div>);})}
+      </div>
+      :
+      <div className="overlaybox">
+        <div className="hint" style={{marginTop:0,marginBottom:8}}>全部以期間起點 = 100 標準化，直接比同期漲跌幅</div>
+        <div ref={overlayRef}></div>
+        <div className="legend">{picked.map((p,i)=><span key={p.code}><i style={{background:SERIES_COLORS[i%SERIES_COLORS.length]}}></i><span className="mono">{p.code}</span> {p.meta?.name}</span>)}</div>
+      </div>}
+  </>;
+}
+
+/* ---------- 熱議榜 ---------- */
+function HotView({hot,hotState,cache,onPick}){
+  const [open,setOpen]=useState(null);
+  if(!hot) return <div className="empty">載入中…</div>;
+  const max=Math.max(...hot.items.map(i=>i.score||0),1);
+  return <>
+    <div className="viewhead"><div><h1>熱議榜</h1>
+      <div className="sub">
+        {hotState==="demo"?"示範資料 · 接上 hot.json 後每日更新":`近 ${hot.window_days||30} 天 · 更新於 ${hot.updated||"—"}`}
+        {hot.source?` · 來源：${hot.source}`:""}
+      </div></div></div>
+    {hot.items.map((it,idx)=>{
+      const d=cache[it.code]?.data;
+      const c=(d&&d.length>=2)?(d[d.length-1].close-d[d.length-2].close)/d[d.length-2].close*100:null;
+      const isOpen=open===it.code; const hls=it.headlines||[];
+      const hasTone=(it.pos||0)+(it.neg||0)>0;
+      return (
+        <div className="hotcard" key={it.code}>
+          <div className="hotrow" onClick={()=>setOpen(isOpen?null:it.code)}>
+            <div className="rank mono">{idx+1}</div>
+            <div className="hotmid">
+              <div><span className="cd mono">{it.code}</span> <span className="nm">{it.name}</span></div>
+              <div className="bar"><i style={{width:((it.score||0)/max*100)+"%"}}></i></div>
+              <div className="metaline">
+                <span>聲量 {it.score||"—"}{it.news!=null?` · 新聞 ${it.news} 則`:""}</span>
+                {hasTone && <span className="tone">
+                  <span className="t"><span className="tdot pos"></span><b className="up">正 {it.pos||0}</b></span>
+                  <span className="t"><span className="tdot neg"></span><b className="down">負 {it.neg||0}</b></span>
+                </span>}
+              </div>
+            </div>
+            <div className="hotright">
+              <div className={"chg mono "+(c==null?"flat":c>0?"up":c<0?"down":"flat")}>{c==null?"—":(c>0?"+":"")+c.toFixed(1)+"%"}</div>
+              <button className="gochart" onClick={(e)=>{e.stopPropagation();onPick(it.code,it.name);}}>看走勢 ›</button>
+            </div>
+          </div>
+          {isOpen && <div className="headlines">
+            {hls.length? hls.map((h,i)=>(
+              <a className="hl" href={h.url||"#"} target="_blank" rel="noreferrer" key={i} onClick={e=>e.stopPropagation()}>
+                <span className={"tdot "+(h.tone||"neu")}></span>
+                <span className="ht">{h.title}</span>
+                <span className="hs">{h.source||""}{h.date?` · ${h.date}`:""}</span>
+              </a>
+            )) : <div className="hint" style={{marginTop:6}}>近期沒有抓到這檔的新聞標題。</div>}
+            {hasTone && <div className="hint" style={{marginTop:8}}>正／負為新聞標題的關鍵字粗估，僅供參考，不影響排名。</div>}
+          </div>}
+        </div>);
+    })}
+    <div className="hint" style={{marginTop:12}}>點列展開新聞 · 點「看走勢」加入清單並跳到走勢圖。</div>
+  </>;
+}
+
+/* ---------- Sheets ---------- */
+function Scrim({children,onClose}){return <div className="scrim" onClick={e=>{if(e.target.classList.contains("scrim"))onClose();}}><div className="sheet"><div className="grab"></div>{children}</div></div>;}
+
+function AddSheet({onClose,onAdd,onRemove,onRename,watchlist,recent,resolveName}){
+  const [code,setCode]=useState("");const [name,setName]=useState("");
+  useEffect(()=>{const n=resolveName(code); if(n) setName(n);},[code,resolveName(code)]);// eslint-disable-line
+  return <Scrim onClose={onClose}>
+    <h3>加入商品（個股 / ETF）</h3>
+    {recent.length>0 && <><div className="hint" style={{marginTop:0,marginBottom:6}}>最近</div><div className="preset" style={{marginBottom:12}}>{recent.map(c=><button key={c} onClick={()=>onAdd(c,"")}>{c}</button>)}</div></>}
+    <div className="hint" style={{marginTop:0,marginBottom:6}}>常用</div>
+    <div className="preset">{PRESETS.map(([c,n])=><button key={c} disabled={watchlist.some(w=>w.code===c)} style={{opacity:watchlist.some(w=>w.code===c)?.4:1}} onClick={()=>onAdd(c,n)}>{c} {n}</button>)}</div>
+    <div className="hint">或輸入任何台股代碼（個股如 2330、上櫃如 6488 皆可）。</div>
+    <div className="two" style={{marginTop:12}}>
+      <div className="field"><label>代碼</label><input value={code} onChange={e=>setCode(e.target.value)} placeholder="2330"/></div>
+      <div className="field"><label>名稱（自動帶出）</label><input value={name} onChange={e=>setName(e.target.value)} placeholder="輸入代碼後自動帶出，可修改"/></div>
+    </div>
+    <button className="primary" onClick={()=>onAdd(code,name)}>加入</button>
+    {watchlist.length>0 && <><div className="hint" style={{marginTop:18,marginBottom:8}}>目前關注（可改名 · 刪除需確認）</div>
+      <div className="managelist">{watchlist.map(w=><ManageRow key={w.code} w={w} onRename={onRename} onRemove={onRemove}/>)}</div></>}
+    <button className="ghost" onClick={onClose}>關閉</button>
+  </Scrim>;
+}
+
+function ManageRow({w,onRename,onRemove}){
+  const [editing,setEditing]=useState(false);
+  const [name,setName]=useState(w.name);
+  const [confirm,setConfirm]=useState(false);
+  return (
+    <div className="mrow">
+      <span className="mcode mono">{w.code}</span>
+      {editing
+        ? <input className="mname-input" value={name} onChange={e=>setName(e.target.value)} autoFocus onKeyDown={e=>{if(e.key==="Enter"){onRename(w.code,name);setEditing(false);}}}/>
+        : <span className="mname">{w.name}</span>}
+      {confirm
+        ? <span className="confirmrow">
+            <span className="chint">刪除？</span>
+            <button className="mact" onClick={()=>setConfirm(false)}>取消</button>
+            <button className="mact danger" onClick={()=>onRemove(w.code)}>確定刪除</button>
+          </span>
+        : <span className="macts">
+            {editing
+              ? <button className="mact ok" onClick={()=>{onRename(w.code,name);setEditing(false);}} aria-label="儲存">✓</button>
+              : <button className="mact" onClick={()=>{setName(w.name);setEditing(true);}} aria-label="改名">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                </button>}
+            <button className="mact del" onClick={()=>setConfirm(true)} aria-label="刪除">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14"/></svg>
+            </button>
+          </span>}
+    </div>
+  );
+}
+
+function EntrySheet({onClose,onSave,defaultCode,codes,cache,entry}){
+  const [code,setCode]=useState(entry?.code||defaultCode);
+  const [date,setDate]=useState(entry?.date||todayStr());
+  const [amount,setAmount]=useState(entry?.amount||"");
+  const [nav,setNav]=useState(entry?.nav||"");
+  const [note,setNote]=useState(entry?.note||"");
+  useEffect(()=>{if(entry)return;const d=cache[code]?.data;if(!d)return;const hit=d.find(x=>x.time===date);if(hit)setNav(hit.close);},[code,date]);// eslint-disable-line
+  const shares=(amount&&nav)?Math.round(+amount/+nav):"";
+  return <Scrim onClose={onClose}>
+    <h3>{entry?"編輯進場紀錄":"記一筆定期定額"}</h3>
+    <div className="two">
+      <div className="field"><label>商品</label><select value={code} onChange={e=>setCode(e.target.value)}>{codes.map(c=><option key={c.code} value={c.code}>{c.code} {c.name}</option>)}</select></div>
+      <div className="field"><label>扣款日期</label><input type="date" value={date} onChange={e=>setDate(e.target.value)}/></div>
+    </div>
+    <div className="two">
+      <div className="field"><label>投入金額</label><input inputMode="numeric" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="3000"/></div>
+      <div className="field"><label>當日淨值 / 買入價</label><input inputMode="decimal" value={nav} onChange={e=>setNav(e.target.value)} placeholder="自動帶入或手填"/></div>
+    </div>
+    <div className="field"><label>備註（可空）</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="第 3 次扣款"/></div>
+    {shares!==""&&<div className="hint">約可買 {shares} 股（金額 ÷ 淨值，僅供參考）。</div>}
+    <button className="primary" onClick={()=>{if(!code||!date)return;onSave({id:entry?.id||("e"+Date.now()),code,date,amount:amount?+amount:null,nav:nav?+nav:null,shares:shares||null,note:note.trim()});}}>{entry?"儲存變更":"加入紀錄"}</button>
+    <button className="ghost" onClick={onClose}>取消</button>
+  </Scrim>;
+}
+
+function SettingsSheet({onClose,settings,setSettings,syncStatus}){
+  const [s,setS]=useState(settings);
+  const dc=syncStatus==="on"?"on":syncStatus==="err"?"err":syncStatus==="wait"?"wait":"";
+  const dt={on:"已同步",err:"設定有誤",wait:"連線中…",off:"未啟用"}[syncStatus]||"未啟用";
+  return <Scrim onClose={onClose}>
+    <h3>設定</h3>
+    <div className="field"><label>FinMind API Token（取得真實行情）</label>
+      <input value={s.finmindToken} onChange={e=>setS({...s,finmindToken:e.target.value})} placeholder="貼上 token；留空則顯示示範資料"/>
+      <div className="hint">到 <a href="https://finmindtrade.com/" target="_blank" rel="noreferrer">finmindtrade.com</a> 免費註冊、驗證信箱後取得。留空時用示範資料。</div></div>
+    <div className="field"><label>熱議榜 hot.json 網址（可空）</label>
+      <input value={s.hotUrl} onChange={e=>setS({...s,hotUrl:e.target.value})} placeholder="留空＝讀同資料夾 ./hot.json"/>
+      <div className="hint">由 GitHub Action 每日產生。未設定或讀不到時顯示示範榜。</div></div>
+    <div className="field">
+      <label style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><span>Firebase 雲端同步</span><span className="synctag"><span className={"dot7 "+dc}></span>{dt}</span></label>
+      <label style={{display:"flex",alignItems:"center",gap:8,margin:"2px 0 8px",fontSize:13}}><input type="checkbox" style={{width:"auto"}} checked={!!s.cloudSync} onChange={e=>setS({...s,cloudSync:e.target.checked})}/>開啟跨裝置同步（關注清單與進場紀錄）</label>
+      <textarea value={s.firebaseConfig} onChange={e=>setS({...s,firebaseConfig:e.target.value})} placeholder={'貼上 firebaseConfig（JSON）'}></textarea>
+      <div className="hint">用你自己的 Firebase 專案；需開 Firestore 與 Anonymous 登入。token 只留本機、不上傳。</div></div>
+    <button className="primary" onClick={()=>{setSettings(s);onClose();}}>儲存設定</button>
+    <button className="ghost" onClick={onClose}>取消</button>
+  </Scrim>;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
