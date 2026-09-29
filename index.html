@@ -421,14 +421,14 @@ function App(){
     const ex=newsCache[code]; if(ex&&ex.when===todayStr()) return;
     if(!settings.finmindToken){setNewsCache(p=>({...p,[code]:{when:todayStr(),items:[],noToken:true}}));return;}
     const pts=(s)=>{const t=Date.parse(String(s||"").replace(/\//g,"-").replace(" ","T"));return isNaN(t)?0:t;};
-    const win=async(days)=>{
-      const url=`https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockNews&data_id=${encodeURIComponent(code)}&start_date=${daysAgoStr(days)}&token=${encodeURIComponent(settings.finmindToken)}`;
+    const day=async(d)=>{                          // 抓「單一天」，避開 60 則上限跨日截斷的問題
+      const ds=daysAgoStr(d);
+      const url=`https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockNews&data_id=${encodeURIComponent(code)}&start_date=${ds}&end_date=${ds}&token=${encodeURIComponent(settings.finmindToken)}`;
       const r=await fetch(url); const j=await r.json(); return j.data||[];
     };
     try{
-      let raw=await win(3);                 // 先抓近 3 天（避免被 60 則上限截在起點日）
-      if(!raw.length) raw=await win(14);    // 沒有就退回近 2 週
-      if(!raw.length) raw=await win(45);    // 再沒有就抓近 45 天，顯示最新可得
+      let raw=[];
+      for(let d=0; d<=8 && !raw.length; d++){ raw=await day(d); }   // 從今天往回找，第一個有新聞的那天
       const items=raw.map(x=>({title:x.title,source:x.source,url:x.link,date:(x.date||"").slice(0,10),ts:pts(x.date)}))
         .filter(x=>x.title).sort((a,b)=>b.ts-a.ts).slice(0,8);
       setNewsCache(p=>({...p,[code]:{when:todayStr(),items}}));
