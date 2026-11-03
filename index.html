@@ -293,6 +293,12 @@
   .spanel-body .entry:first-child{border-top:none;padding-top:2px;}
   .spanel-body .empty-inline{background:none;border:none;box-shadow:none;padding:4px 2px;}
   .spanel-body .hl:first-of-type{padding-top:2px;}
+  .plsum{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:2px 0 12px;}
+  .plrow{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;font-size:12.5px;}
+  .plrow .plk{color:var(--ink-soft);}
+  .plrow.big{border-top:1px solid var(--line);margin-top:6px;padding-top:11px;}
+  .plrow.big .plk{font-weight:500;color:var(--ink);}
+  .plrow.big .plv{font-size:17px;font-weight:500;}
 </style>
 </head>
 <body>
@@ -353,8 +359,14 @@ function catOf(type){
   return {label:type,cls:"act"};
 }
 
+// 主動式 ETF：代碼第 6 碼為 A（如 00981A、00403A）
+function guessActive(code){ return /^0\d{4}A$/i.test((code||"").trim()); }
+// 取得代碼的有效類型（資料檔沒有時，主動式 ETF 自動判定）
+function effType(code,etfInfo){ const t=etfInfo&&etfInfo[code]&&etfInfo[code].type; if(t) return t; if(guessActive(code)) return "主動型"; return null; }
+// 取得有效的商品資訊物件（主動式 ETF 無資料時給最小物件）
+function effInfo(code,etfInfo){ if(etfInfo&&etfInfo[code]) return etfInfo[code]; if(guessActive(code)) return {type:"主動型",note:"主動式 ETF，持股與比重由經理團隊主動調整、變動較大，此處未列成分。"}; return null; }
 // 分類 key（給篩選用）：ETF 依 type 歸類，非 ETF 視為個股
-function catKey(code,etfInfo){ const t=etfInfo&&etfInfo[code]&&etfInfo[code].type; if(!t) return "個股"; const c=catOf(t); return c?c.label:"其他"; }
+function catKey(code,etfInfo){ const t=effType(code,etfInfo); if(!t) return "個股"; const c=catOf(t); return c?c.label:"其他"; }
 function catsIn(watchlist,etfInfo){ const order=["市值型","高股息","主動型","個股","其他"]; const has={}; watchlist.forEach(w=>{has[catKey(w.code,etfInfo)]=true;}); return ["全部",...order.filter(o=>has[o])]; }
 
 const todayStr=()=>new Date().toISOString().slice(0,10);
@@ -648,7 +660,7 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
   },[selected,chartType,range,cur,entries,theme]);// eslint-disable-line
 
   const myEntries=entries.filter(e=>e.code===selected).sort((a,b)=>a.date<b.date?1:-1);
-  const cat=catOf(etfInfo[selected]?.type);
+  const cat=catOf(effType(selected,etfInfo));
   const [fcat,setFcat]=useState("全部");
   const cats=catsIn(watchlist,etfInfo);
   const shownWatch=fcat==="全部"?watchlist:watchlist.filter(w=>catKey(w.code,etfInfo)===fcat);
@@ -689,12 +701,30 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
 
     <Accordion title="我的進場紀錄" defaultOpen action={<span className="act-link" onClick={e=>{e.stopPropagation();setSheet("addEntry");}}>＋ 記一筆</span>}>
       {myEntries.length
-        ? myEntries.map(e=><EntryRow key={e.id} e={e} onEdit={ee=>setSheet({mode:"editEntry",entry:ee})} onDelete={delEntry}/>)
+        ? <>
+            {(()=>{
+              const px=last?last.close:null;
+              const ts=myEntries.reduce((s,e)=>s+(e.shares||0),0);
+              const tc=myEntries.reduce((s,e)=>s+(e.amount||(e.shares&&e.nav?e.shares*e.nav:0)||0),0);
+              if(!ts||!tc) return null;
+              const avg=tc/ts, mv=px!=null?ts*px:null, pl=mv!=null?mv-tc:null, plp=pl!=null?pl/tc*100:null;
+              const pdir=pl==null?"flat":pl>0?"up":pl<0?"down":"flat";
+              return <div className="plsum">
+                <div className="plrow"><span className="plk">持有股數</span><span className="plv mono">{fmt(ts,0)} 股</span></div>
+                <div className="plrow"><span className="plk">平均成本</span><span className="plv mono">{fmt(avg)}</span></div>
+                <div className="plrow"><span className="plk">投入成本</span><span className="plv mono">${Number(tc).toLocaleString()}</span></div>
+                <div className="plrow"><span className="plk">目前市值</span><span className="plv mono">{mv!=null?"$"+Number(Math.round(mv)).toLocaleString():"—"}</span></div>
+                <div className="plrow big"><span className="plk">損益{px!=null&&!cur?.demo?"":"（示範）"}</span>
+                  <span className={"plv mono "+pdir}>{pl==null?"—":(pl>0?"▲ +":pl<0?"▼ ":"")+"$"+Number(Math.round(Math.abs(pl))).toLocaleString()+(plp!=null?"　"+(plp>0?"+":"")+plp.toFixed(2)+"%":"")}</span></div>
+              </div>;
+            })()}
+            {myEntries.map(e=><EntryRow key={e.id} e={e} px={last?last.close:null} onEdit={ee=>setSheet({mode:"editEntry",entry:ee})} onDelete={delEntry}/>)}
+          </>
         : <button className="empty-inline" onClick={()=>setSheet("addEntry")}>還沒有紀錄 — 點這裡記一筆，進場點就會標在走勢圖上</button>}
     </Accordion>
 
-    <Accordion title="商品資訊 · 成分與費用" right={etfInfo[selected]?(etfInfo[selected].type||"ETF"):"個股"}>
-      <InfoBody info={etfInfo[selected]} isEtf={!!etfInfo[selected]} onStock={onStock}/>
+    <Accordion title="商品資訊 · 成分與費用" right={effInfo(selected,etfInfo)?(effInfo(selected,etfInfo).type||"ETF"):"個股"}>
+      <InfoBody info={effInfo(selected,etfInfo)} isEtf={!!effInfo(selected,etfInfo)} onStock={onStock}/>
     </Accordion>
 
     <Accordion title="相關新聞" right={news&&news.items&&news.items[0]?("更新至 "+news.items[0].date.slice(5)):(news&&news.noToken?"未設定":"")}>
@@ -731,12 +761,15 @@ function NewsBody({news}){
   </> : <div className="hint" style={{marginTop:0}}>近期沒有抓到相關新聞。</div>;
 }
 
-function EntryRow({e,onEdit,onDelete}){
+function EntryRow({e,px,onEdit,onDelete}){
   const [confirm,setConfirm]=useState(false);
+  const pl=(px!=null&&e.nav&&e.shares)?(px-e.nav)*e.shares:null;
+  const plp=(pl!=null&&e.nav)?(px-e.nav)/e.nav*100:null;
+  const pdir=pl==null?"flat":pl>0?"up":pl<0?"down":"flat";
   return (
     <div className="entry">
       <div className="date mono">{e.date}</div>
-      <div className="mid"><div className="code mono">{e.code}</div>{e.note&&<div className="note">{e.note}</div>}</div>
+      <div className="mid"><div className="code mono">{e.code}{e.shares?<span className="note" style={{marginLeft:6}}>{fmt(e.shares,0)}股 @ {e.nav?fmt(e.nav):"—"}</span>:null}</div>{e.note&&<div className="note">{e.note}</div>}</div>
       {confirm
         ? <span className="confirmrow">
             <span className="chint">刪除？</span>
@@ -744,7 +777,7 @@ function EntryRow({e,onEdit,onDelete}){
             <button className="mact danger" onClick={()=>onDelete(e.id)}>確定刪除</button>
           </span>
         : <>
-            <div className="num"><div className="amt mono">{e.amount?("$"+Number(e.amount).toLocaleString()):"—"}</div><div className="px mono">淨值 {e.nav?fmt(e.nav):"—"}{e.shares?` · ${fmt(e.shares,0)}股`:""}</div></div>
+            <div className="num"><div className="amt mono">{e.amount?("$"+Number(e.amount).toLocaleString()):"—"}</div><div className={"px mono "+pdir}>{pl==null?"投入":(pl>0?"+":"")+"$"+Number(Math.round(pl)).toLocaleString()+(plp!=null?` (${plp>0?"+":""}${plp.toFixed(1)}%)`:"")}</div></div>
             <button className="x" onClick={()=>onEdit(e)} aria-label="編輯">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
             </button>
@@ -863,7 +896,7 @@ function CompareView({watchlist,cmpSel,setCmpSel,toggleCmp,cmpPeriod,setCmpPerio
           </div>);})()}
         {picked.map((p,i)=>{const chg=periodChg(p.data);return (
           <div className="mini" key={p.code}>
-            <div className="h"><div><span className="cd mono">{p.code}</span> <span className="nm">{p.meta?.name}</span>{(()=>{const ct=catOf(etfInfo[p.code]?.type);return ct?<span className={"cat "+ct.cls} style={{marginLeft:6}}>{ct.label}</span>:null;})()}</div>
+            <div className="h"><div><span className="cd mono">{p.code}</span> <span className="nm">{p.meta?.name}</span>{(()=>{const ct=catOf(effType(p.code,etfInfo));return ct?<span className={"cat "+ct.cls} style={{marginLeft:6}}>{ct.label}</span>:null;})()}</div>
               <span className={"mono "+(chg==null?"flat":chg>0?"up":"down")} style={{fontSize:13}}>{chg==null?"—":(chg>0?"+":"")+chg.toFixed(1)+"%"}</span></div>
             <div style={{marginTop:8}}><Spark data={p.data} days={RANGE_DAYS[cmpPeriod]} color={SERIES_COLORS[i%SERIES_COLORS.length]} h={60}/></div>
           </div>);})}
@@ -996,11 +1029,11 @@ function ManageRow({w,onRename,onRemove}){
 function EntrySheet({onClose,onSave,defaultCode,codes,cache,entry}){
   const [code,setCode]=useState(entry?.code||defaultCode);
   const [date,setDate]=useState(entry?.date||todayStr());
-  const [amount,setAmount]=useState(entry?.amount||"");
+  const [shares,setShares]=useState(entry?.shares||"");
   const [nav,setNav]=useState(entry?.nav||"");
   const [note,setNote]=useState(entry?.note||"");
   useEffect(()=>{if(entry)return;const d=cache[code]?.data;if(!d)return;const hit=d.find(x=>x.time===date);if(hit)setNav(hit.close);},[code,date]);// eslint-disable-line
-  const shares=(amount&&nav)?Math.round(+amount/+nav):"";
+  const amount=(shares&&nav)?+(+shares*+nav).toFixed(0):"";
   return <Scrim onClose={onClose}>
     <h3>{entry?"編輯進場紀錄":"記一筆定期定額"}</h3>
     <div className="two">
@@ -1008,12 +1041,13 @@ function EntrySheet({onClose,onSave,defaultCode,codes,cache,entry}){
       <div className="field"><label>扣款日期</label><input type="date" value={date} onChange={e=>setDate(e.target.value)}/></div>
     </div>
     <div className="two">
-      <div className="field"><label>投入金額</label><input inputMode="numeric" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="3000"/></div>
+      <div className="field"><label>買進股數</label><input inputMode="numeric" value={shares} onChange={e=>setShares(e.target.value)} placeholder="如 28"/></div>
       <div className="field"><label>當日淨值 / 買入價</label><input inputMode="decimal" value={nav} onChange={e=>setNav(e.target.value)} placeholder="自動帶入或手填"/></div>
     </div>
+    <div className="field"><label>投入金額（自動計算）</label><input value={amount===""?"":("$"+Number(amount).toLocaleString())} readOnly placeholder="股數 × 淨值" style={{background:"var(--surface-2)",color:"var(--ink-soft)"}}/></div>
     <div className="field"><label>備註（可空）</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="第 3 次扣款"/></div>
-    {shares!==""&&<div className="hint">約可買 {shares} 股（金額 ÷ 淨值，僅供參考）。</div>}
-    <button className="primary" onClick={()=>{if(!code||!date)return;onSave({id:entry?.id||("e"+Date.now()),code,date,amount:amount?+amount:null,nav:nav?+nav:null,shares:shares||null,note:note.trim()});}}>{entry?"儲存變更":"加入紀錄"}</button>
+    {amount!==""&&<div className="hint">投入金額 = {shares} 股 × 淨值 {nav} = ${Number(amount).toLocaleString()}</div>}
+    <button className="primary" onClick={()=>{if(!code||!date)return;onSave({id:entry?.id||("e"+Date.now()),code,date,amount:amount||null,nav:nav?+nav:null,shares:shares?+shares:null,note:note.trim()});}}>{entry?"儲存變更":"加入紀錄"}</button>
     <button className="ghost" onClick={onClose}>取消</button>
   </Scrim>;
 }
