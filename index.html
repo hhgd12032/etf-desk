@@ -299,6 +299,15 @@
   .plrow.big{border-top:1px solid var(--line);margin-top:6px;padding-top:11px;}
   .plrow.big .plk{font-weight:500;color:var(--ink);}
   .plrow.big .plv{font-size:17px;font-weight:500;}
+  .holdrow{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:8px;}
+  .holdrow:active{transform:translateY(1px);}
+  .holdrow .hl1{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .holdrow .hcode{font-size:13px;font-weight:500;}
+  .holdrow .hnm{font-size:11px;color:var(--ink-soft);font-weight:400;}
+  .holdrow .hpl{font-size:15px;}
+  .holdrow .hbar2{height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden;margin:9px 0 8px;}
+  .holdrow .hbar2>i{display:block;height:100%;background:var(--gold);border-radius:3px;}
+  .holdrow .hl2{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--ink-soft);}
 </style>
 </head>
 <body>
@@ -513,6 +522,7 @@ function App(){
   useEffect(()=>{watchlist.forEach(w=>{if(!cache[w.code])loadCode(w.code);});},[watchlist,settings.finmindToken]);// eslint-disable-line
   useEffect(()=>{cmpSel.forEach(c=>{if(!cache[c])loadCode(c);});},[cmpSel,settings.finmindToken]);// eslint-disable-line
   useEffect(()=>{if(nav==="compare"&&!cache["TAIEX"])loadCode("TAIEX");},[nav,settings.finmindToken]);// eslint-disable-line
+  useEffect(()=>{if(nav==="holdings"){[...new Set(entries.map(e=>e.code))].forEach(c=>{if(!cache[c])loadCode(c);});}},[nav,entries,settings.finmindToken]);// eslint-disable-line
 
   /* 熱議榜資料 */
   useEffect(()=>{
@@ -555,7 +565,7 @@ function App(){
   const delEntry=(id)=>{setEntries(v=>v.filter(x=>x.id!==id));bump();};
   const toggleCmp=(code)=>setCmpSel(v=>v.includes(code)?v.filter(c=>c!==code):(v.length<8?[...v,code]:v));
 
-  const NAVS=[["chart","走勢",<path d="M3 3v18h18"/>,],["compare","比較",<g><rect x="4" y="5" width="7" height="14" rx="1"/><rect x="13" y="9" width="7" height="10" rx="1"/></g>],["hot","熱議榜",<g><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/></g>]];
+  const NAVS=[["chart","走勢",<path d="M3 3v18h18"/>,],["compare","比較",<g><rect x="4" y="5" width="7" height="14" rx="1"/><rect x="13" y="9" width="7" height="10" rx="1"/></g>],["holdings","持倉",<g><path d="M3 10h18"/><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5V3h8v2"/></g>],["hot","熱議榜",<g><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/></g>]];
   const nextTheme=()=>setTheme(t=>t==="auto"?"light":t==="light"?"dark":"auto");
   const themeLabel={auto:"自動",light:"亮色",dark:"深色"}[theme]||"自動";
   const moon=<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>;
@@ -595,6 +605,7 @@ function App(){
 
         {nav==="chart" && <ChartView {...{watchlist,selected,setSelected,cache,chipChg,chartType,setChartType,range,setRange,entries,setSheet,delEntry,etfInfo,onStock:addCode,news:newsCache[selected],theme}}/>}
         {nav==="compare" && <CompareView {...{watchlist,cmpSel,setCmpSel,toggleCmp,cmpPeriod,setCmpPeriod,cmpLayout,setCmpLayout,cache,etfInfo,theme}}/>}
+        {nav==="holdings" && <HoldingsView {...{entries,cache,watchlist,etfInfo,onPick:(c,n)=>{addCode(c,n);}}}/>}
         {nav==="hot" && <HotView {...{hot,hotState,cache,onPick:(c,n)=>{addCode(c,n);}}}/>}
       </main>
 
@@ -641,7 +652,7 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
       layout:{background:{type:"solid",color:"transparent"},textColor:g("--ink-soft"),fontFamily:"Space Grotesk, sans-serif",fontSize:11},
       grid:{vertLines:{visible:false},horzLines:{color:g("--line")}},
       rightPriceScale:{borderColor:g("--line")}, timeScale:{borderColor:g("--line"),fixLeftEdge:true,fixRightEdge:true},
-      crosshair:{mode:0,vertLine:{color:g("--ink-soft"),width:1,style:2,labelBackgroundColor:g("--ink")},horzLine:{color:g("--ink-soft"),style:2,labelBackgroundColor:g("--ink")}},
+      crosshair:{mode:1,vertLine:{color:g("--ink-soft"),width:1,style:2,labelBackgroundColor:g("--ink")},horzLine:{color:g("--ink-soft"),style:2,labelBackgroundColor:g("--ink")}},
       handleScroll:{vertTouchDrag:false,horzTouchDrag:true,mouseWheel:true,pressedMouseMove:true},
       handleScale:{axisPressedMouseMove:true,pinch:true,mouseWheel:true},
     });
@@ -650,9 +661,21 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
       s.setData(sliced.map(d=>({time:d.time,open:d.open,high:d.high,low:d.low,close:d.close})));}
     else{s=chart.addAreaSeries({lineColor:acc,lineWidth:2,topColor:rgba(acc,0.28),bottomColor:rgba(acc,0.0),priceLineVisible:false,crosshairMarkerRadius:4,crosshairMarkerBorderColor:acc,crosshairMarkerBackgroundColor:acc});
       s.setData(sliced.map(d=>({time:d.time,value:d.close})));}
-    const marks=entries.filter(e=>e.code===selected&&e.date>=cut).sort((a,b)=>a.date<b.date?-1:1)
-      .map(e=>({time:e.date,position:"belowBar",color:acc,shape:"arrowUp",text:"定額"+(e.amount?(" $"+Number(e.amount).toLocaleString()):"")}));
+    // 同一天多筆合併成一個買點
+    const byDay={};
+    entries.filter(e=>e.code===selected&&e.date>=cut).forEach(e=>{
+      const d=byDay[e.date]||(byDay[e.date]={sh:0,amt:0});
+      d.sh+=(e.shares||0); d.amt+=(e.amount||(e.shares&&e.nav?e.shares*e.nav:0)||0);
+    });
+    const marks=Object.keys(byDay).sort().map(dt=>{const d=byDay[dt];
+      return {time:dt,position:"belowBar",color:acc,shape:"circle",size:1,text:d.sh?(d.sh+"股"):"買"};});
     if(marks.length)s.setMarkers(marks);
+    // 平均成本水平虛線（用全部該檔紀錄計算）
+    const allE=entries.filter(e=>e.code===selected);
+    const tsh=allE.reduce((x,e)=>x+(e.shares||0),0);
+    const tc=allE.reduce((x,e)=>x+(e.amount||(e.shares&&e.nav?e.shares*e.nav:0)||0),0);
+    if(tsh&&tc){const avg=tc/tsh;
+      s.createPriceLine({price:+avg.toFixed(2),color:g("--ink-soft"),lineWidth:1,lineStyle:2,axisLabelVisible:true,title:"均價"});}
     chart.timeScale().fitContent();
     const ro=new ResizeObserver(()=>{const h=el.clientWidth>=760?440:300;chart.applyOptions({width:el.clientWidth,height:h});});
     ro.observe(el);
@@ -769,7 +792,7 @@ function EntryRow({e,px,onEdit,onDelete}){
   return (
     <div className="entry">
       <div className="date mono">{e.date}</div>
-      <div className="mid"><div className="code mono">{e.code}{e.shares?<span className="note" style={{marginLeft:6}}>{fmt(e.shares,0)}股 @ {e.nav?fmt(e.nav):"—"}</span>:null}</div>{e.note&&<div className="note">{e.note}</div>}</div>
+      <div className="mid"><div className="code mono">{e.shares?`${fmt(e.shares,0)}股 @ ${e.nav?fmt(e.nav):"—"}`:(e.nav?`淨值 ${fmt(e.nav)}`:"—")}</div>{e.note&&<div className="note">{e.note}</div>}</div>
       {confirm
         ? <span className="confirmrow">
             <span className="chint">刪除？</span>
@@ -911,6 +934,59 @@ function CompareView({watchlist,cmpSel,setCmpSel,toggleCmp,cmpPeriod,setCmpPerio
         </div>
       </div>}
   </>;
+}
+
+/* ---------- 持倉 ---------- */
+function HoldingsView({entries,cache,watchlist,etfInfo,onPick}){
+  const codes=[...new Set(entries.map(e=>e.code))];
+  const nameOf=(c)=>{const w=watchlist.find(x=>x.code===c);return w?w.name:c;};
+  const rows=codes.map(code=>{
+    const es=entries.filter(e=>e.code===code);
+    const sh=es.reduce((x,e)=>x+(e.shares||0),0);
+    const cost=es.reduce((x,e)=>x+(e.amount||(e.shares&&e.nav?e.shares*e.nav:0)||0),0);
+    const d=cache[code]?.data; const px=(d&&d.length)?d[d.length-1].close:null;
+    const demo=cache[code]?.demo;
+    const avg=sh?cost/sh:null; const mv=(px!=null&&sh)?sh*px:null;
+    const pl=(mv!=null)?mv-cost:null; const plp=(pl!=null&&cost)?pl/cost*100:null;
+    return {code,name:nameOf(code),sh,cost,avg,px,mv,pl,plp,demo};
+  }).filter(r=>r.sh||r.cost).sort((a,b)=>(b.mv||b.cost)-(a.mv||a.cost));
+
+  const tCost=rows.reduce((x,r)=>x+r.cost,0);
+  const tMV=rows.reduce((x,r)=>x+(r.mv!=null?r.mv:r.cost),0);
+  const haveMV=rows.some(r=>r.mv!=null);
+  const tPL=haveMV?tMV-tCost:null; const tPLp=(tPL!=null&&tCost)?tPL/tCost*100:null;
+  const anyDemo=rows.some(r=>r.demo);
+  const pdir=tPL==null?"flat":tPL>0?"up":tPL<0?"down":"flat";
+  const maxMV=Math.max(...rows.map(r=>r.mv!=null?r.mv:r.cost),1);
+
+  return <div className="walk">
+    <div className="viewhead"><div><h1>我的持倉</h1><div className="sub">跨所有商品的總成本、市值與損益{anyDemo?" · 含示範價":""}</div></div></div>
+    {rows.length===0
+      ? <div className="empty">還沒有任何進場紀錄。<br/>到走勢頁點「＋ 記一筆」開始記錄，這裡就會自動彙總。</div>
+      : <>
+        <div className="plsum" style={{marginTop:0}}>
+          <div className="plrow"><span className="plk">投入成本</span><span className="plv mono">${Number(Math.round(tCost)).toLocaleString()}</span></div>
+          <div className="plrow"><span className="plk">目前市值</span><span className="plv mono">{haveMV?"$"+Number(Math.round(tMV)).toLocaleString():"—"}</span></div>
+          <div className="plrow big"><span className="plk">總損益{anyDemo?"（含示範）":""}</span>
+            <span className={"plv mono "+pdir}>{tPL==null?"—":(tPL>0?"▲ +":tPL<0?"▼ ":"")+"$"+Number(Math.round(Math.abs(tPL))).toLocaleString()+(tPLp!=null?"　"+(tPLp>0?"+":"")+tPLp.toFixed(2)+"%":"")}</span></div>
+        </div>
+        {rows.map(r=>{
+          const rdir=r.pl==null?"flat":r.pl>0?"up":r.pl<0?"down":"flat";
+          return <button className="holdrow" key={r.code} onClick={()=>onPick(r.code,r.name)}>
+            <div className="hl1">
+              <div className="hcode"><span className="mono">{r.code}</span> <span className="hnm">{r.name}</span>{(()=>{const ct=catOf(effType(r.code,etfInfo));return ct?<span className={"cat "+ct.cls} style={{marginLeft:6}}>{ct.label}</span>:null;})()}</div>
+              <div className={"hpl mono "+rdir}>{r.pl==null?"—":(r.pl>0?"+":"")+"$"+Number(Math.round(r.pl)).toLocaleString()}</div>
+            </div>
+            <div className="hbar2"><i style={{width:((r.mv!=null?r.mv:r.cost)/maxMV*100)+"%"}}></i></div>
+            <div className="hl2">
+              <span>{fmt(r.sh,0)}股 · 均價 {r.avg!=null?fmt(r.avg):"—"} · 現價 {r.px!=null?fmt(r.px):"—"}</span>
+              <span className={"mono "+rdir}>{r.plp==null?"":(r.plp>0?"+":"")+r.plp.toFixed(2)+"%"}</span>
+            </div>
+          </button>;
+        })}
+        <div className="hint" style={{marginTop:10}}>點任一列可跳到該商品走勢。損益需在設定貼 FinMind token 才會用真實現價。</div>
+      </>}
+  </div>;
 }
 
 /* ---------- 熱議榜 ---------- */
