@@ -676,6 +676,8 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
   const boxRef=useRef(null);
   const [maOn,setMaOn]=useState(()=>{try{return localStorage.getItem("etfDesk.ma")!=="0";}catch(e){return true;}});
   useEffect(()=>{try{localStorage.setItem("etfDesk.ma",maOn?"1":"0");}catch(e){}},[maOn]);
+  const [lblOn,setLblOn]=useState(()=>{try{return localStorage.getItem("etfDesk.lbl")!=="0";}catch(e){return true;}});
+  useEffect(()=>{try{localStorage.setItem("etfDesk.lbl",lblOn?"1":"0");}catch(e){}},[lblOn]);
   const maSnap=maSnapshot(series);
 
   useEffect(()=>{
@@ -695,9 +697,9 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
       handleScale:{axisPressedMouseMove:true,pinch:true,mouseWheel:true},
     });
     let s; const acc=g("--gold");
-    if(chartType==="candle"){s=chart.addCandlestickSeries({upColor:g("--rust"),downColor:g("--pine"),borderUpColor:g("--rust"),borderDownColor:g("--pine"),wickUpColor:g("--rust"),wickDownColor:g("--pine")});
+    if(chartType==="candle"){s=chart.addCandlestickSeries({upColor:g("--rust"),downColor:g("--pine"),borderUpColor:g("--rust"),borderDownColor:g("--pine"),wickUpColor:g("--rust"),wickDownColor:g("--pine"),lastValueVisible:lblOn,priceLineVisible:lblOn});
       s.setData(sliced.map(d=>({time:d.time,open:d.open,high:d.high,low:d.low,close:d.close})));}
-    else{s=chart.addAreaSeries({lineColor:acc,lineWidth:2,topColor:rgba(acc,0.28),bottomColor:rgba(acc,0.0),priceLineVisible:false,crosshairMarkerRadius:4,crosshairMarkerBorderColor:acc,crosshairMarkerBackgroundColor:acc});
+    else{s=chart.addAreaSeries({lineColor:acc,lineWidth:2,topColor:rgba(acc,0.28),bottomColor:rgba(acc,0.0),priceLineVisible:false,lastValueVisible:lblOn,crosshairMarkerRadius:4,crosshairMarkerBorderColor:acc,crosshairMarkerBackgroundColor:acc});
       s.setData(sliced.map(d=>({time:d.time,value:d.close})));}
     // 均線：用完整歷史計算，再只畫圖表範圍內，線才會從最左邊開始
     const crossMarks=[];
@@ -723,18 +725,19 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
     const marks=Object.keys(byDay).sort().map(dt=>{const d=byDay[dt];
       return {time:dt,position:"belowBar",color:acc,shape:"circle",size:1,text:d.sh?(d.sh+"股"):"買"};});
     const allMarks=[...marks,...crossMarks].sort((a,b)=>a.time<b.time?-1:a.time>b.time?1:0);
-    if(allMarks.length)s.setMarkers(allMarks);
+    // 標價關閉時只留圖示、拿掉文字
+    if(allMarks.length)s.setMarkers(lblOn?allMarks:allMarks.map(m=>({...m,text:""})));
     // 平均成本水平虛線（用全部該檔紀錄計算）
     const allE=entries.filter(e=>e.code===selected);
     const tsh=allE.reduce((x,e)=>x+(e.shares||0),0);
     const tc=allE.reduce((x,e)=>x+(e.amount||(e.shares&&e.nav?e.shares*e.nav:0)||0),0);
     if(tsh&&tc){const avg=tc/tsh;
-      s.createPriceLine({price:+avg.toFixed(2),color:g("--ink-soft"),lineWidth:1,lineStyle:2,axisLabelVisible:true,title:"均價"});}
+      s.createPriceLine({price:+avg.toFixed(2),color:g("--ink-soft"),lineWidth:1,lineStyle:2,axisLabelVisible:lblOn,title:lblOn?"均價":""});}
     chart.timeScale().fitContent();
     const ro=new ResizeObserver(()=>{const h=el.clientWidth>=760?440:300;chart.applyOptions({width:el.clientWidth,height:h});});
     ro.observe(el);
     return ()=>{ro.disconnect();chart.remove();};
-  },[selected,chartType,range,cur,entries,theme,maOn]);// eslint-disable-line
+  },[selected,chartType,range,cur,entries,theme,maOn,lblOn]);// eslint-disable-line
 
   const myEntries=entries.filter(e=>e.code===selected).sort((a,b)=>a.date<b.date?1:-1);
   const cat=catOf(effType(selected,etfInfo));
@@ -769,7 +772,10 @@ function ChartView({watchlist,selected,setSelected,cache,chipChg,chartType,setCh
       {series.length?<div className="chartbox" ref={boxRef}></div>:<div className="chart-empty">選一檔開始，或到設定貼上 FinMind token 取得真實走勢。</div>}
       {series.length>0 && <div className="malegend">
         {maOn && maSnap && maSnap.rows.map(r=><span key={r.n} className="mk"><span className="sw" style={{background:r.color}}></span>{r.label} <span className="mono" style={{color:"var(--ink)"}}>{r.ok?fmt(r.val):"—"}</span>{r.ok&&<span className={r.slope>0?"up":r.slope<0?"down":"flat"}>{r.slope>0?"↑":r.slope<0?"↓":"→"}</span>}</span>)}
-        <button className={"tg"+(maOn?" on":"")} onClick={()=>setMaOn(v=>!v)}>{maOn?"均線 開":"均線 關"}</button>
+        <span style={{marginLeft:"auto",display:"inline-flex",gap:6}}>
+          <button className={"tg"+(lblOn?" on":"")} style={{marginLeft:0}} onClick={()=>setLblOn(v=>!v)}>{lblOn?"標價 開":"標價 關"}</button>
+          <button className={"tg"+(maOn?" on":"")} style={{marginLeft:0}} onClick={()=>setMaOn(v=>!v)}>{maOn?"均線 開":"均線 關"}</button>
+        </span>
       </div>}
     </div>
 
