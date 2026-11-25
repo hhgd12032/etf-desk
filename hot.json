@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-24",
+  "updated": "2026-11-25",
   "source": "FinMind 新聞(30天)＋成交熱度",
   "window_days": 30,
   "sentiment_note": "正/負為新聞標題關鍵字粗估，僅供參考，不影響排名",
@@ -7,455 +7,103 @@
     {
       "code": "2330",
       "name": "台積電",
-      "score": 83,
-      "news": 18,
+      "score": 100,
+      "news": 23,
       "pos": 4,
-      "neg": 1,
+      "neg": 5,
       "headlines": [
         {
-          "title": "輝達加持台積電、致茂 外媒點名「抓住關鍵時刻，儘早入場」 - 自由時報",
-          "url": "https://stock.ltn.com.tw/article/gy1h0cqgsjmg",
-          "source": "自由時報",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "台積電等2檔台股入列 外媒點名輝達加持下「抓住關鍵時刻，儘早入場」 - 自由時報",
-          "url": "https://stock.ltn.com.tw/article/gy1h0cqgsjmg",
-          "source": "自由時報",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "輝達加持台積電、致茂 外媒點名「抓住關鍵時刻，儘早入場」 - 自由時報",
-          "url": "https://stock.ltn.com.tw/article/gy1h0cqgsjmg",
-          "source": "自由時報",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "2330 台積電 - 【點靈週更｜勿猜何時止跌, 尊重市場, 等待轉折】 - 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186746700",
+          "title": "台積電(2330) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/2330/f00025",
           "source": "CMoney",
-          "date": "10-25",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "颱風襲台逾28萬戶停電，台積電與零售通路誰更扛得住-林彥廷看盤室 - CMoney投資網誌",
-          "url": "https://cmnews.com.tw/article/linyanting-068576a3-d06c-11f1-bd1c-e6b005522b3c",
-          "source": "CMoney投資網誌",
-          "date": "10-25",
+          "title": "台積電、聯發科怎麼撿？杜金龍教戰「零股買法」：這檔大跌就買開盤價 - FTNN 新聞網",
+          "url": "https://www.ftnn.com.tw/news/590503",
+          "source": "FTNN 新聞網",
+          "date": "10-26",
+          "tone": "neg"
+        },
+        {
+          "title": "2330 台積電 - 🚀 怪博士（誠懇哥）艦長日誌｜10/27（二） - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186758103",
+          "source": "CMoney",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "台積電跌破2400元 內資報告抱屈喊「評價偏低」 - 自由時報",
-          "url": "https://stock.ltn.com.tw/article/z7r0r3txxwyt",
-          "source": "自由時報",
-          "date": "10-25",
-          "tone": "neu"
+          "title": "搶「護國神山」進駐　台積電存款利率飆到2.1% - ETtoday財經雲",
+          "url": "https://finance.ettoday.net/news/3261283",
+          "source": "ETtoday財經雲",
+          "date": "10-26",
+          "tone": "pos"
+        },
+        {
+          "title": "2330 台積電 - 【台積電(2330)盤後解析】投信撐盤，外資賣壓減緩 今天... - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186863821",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neg"
+        },
+        {
+          "title": "【盤前】外資殺紅眼！國家隊、投信聯手難擋賣壓 台積電收低1.45% - 三立新聞",
+          "url": "https://inews.setn.com/news/1926865",
+          "source": "三立新聞",
+          "date": "10-26",
+          "tone": "neg"
         }
       ]
     },
     {
       "code": "0050",
       "name": "元大台灣50",
-      "score": 58,
-      "news": 16,
+      "score": 54,
+      "news": 17,
       "pos": 1,
       "neg": 0,
       "headlines": [
         {
-          "title": "【零股排行榜】 盤中零股成交量TOP 20｜0050 元大台灣50、0056 元大高股息、2330 台積電、00406A 主動中信台灣收益、00631L 元大台灣50正2 (1022)｜豐雲學堂2026 年 10 月 - 永豐金證券",
-          "url": "https://www.sinotrade.com.tw/richclub/MarketTrends/-%E9%9B%B6%E8%82%A1%E6%8E%92%E8%A1%8C%E6%A6%9C--%E7%9B%A4%E4%B8%AD%E9%9B%B6%E8%82%A1%E6%88%90%E4%BA%A4%E9%87%8FTOP-20-0050-%E5%85%83%E5%A4%A7%E5%8F%B0%E7%81%A350-0056-%E5%85%83%E5%A4%A7%E9%AB%98%E8%82%A1%E6%81%AF-2330-%E5%8F%B0%E7%A9%8D%E9%9B%BB-00406A-%E4%B8%BB%E5%8B%95%E4%B8%AD%E4%BF%A1%E5%8F%B0%E7%81%A3%E6%94%B6%E7%9B%8A-00631L-%E5%85%83%E5%A4%A7%E5%8F%B0%E7%81%A350%E6%AD%A32--1022--6ad9a860e3717e01577cc412",
-          "source": "永豐金證券",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "投資小白問這檔ETF能追上0050嗎？網友神回「台股要上50萬點」 - 自由財經",
-          "url": "https://ec.ltn.com.tw/article/breakingnews/5618526",
-          "source": "自由財經",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "年化配息率18.2%！國家隊加碼14億進場「這檔主動式ETF」 再入手瑤池金母、升級版0050 - FTNN 新聞網",
-          "url": "https://www.ftnn.com.tw/news/590132",
+          "title": "背學貸也想拚投資！他問每月5千元買0050「4年賺多少」 過來人曝長抱心得 - FTNN 新聞網",
+          "url": "https://www.ftnn.com.tw/news/590461",
           "source": "FTNN 新聞網",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "投資小白問這檔ETF能追上0050嗎？網友神回「台股要上50萬點」 - 聚財網",
-          "url": "https://news.wearn.com/c2132173.html",
-          "source": "聚財網",
-          "date": "10-25",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "投資小白問這檔ETF能追上0050嗎？網友神回「台股要上50萬點」 - 自由財經",
-          "url": "https://ec.ltn.com.tw/amp/article/breakingnews/5618526",
-          "source": "自由財經",
-          "date": "10-25",
+          "title": "元大台灣50 (0050.TW) 股價、新聞、報價和記錄 - Yahoo 財經",
+          "url": "https://hk.finance.yahoo.com/quote/0050.TW/",
+          "source": "Yahoo 財經",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "006208「1拆8」比0050划算？小資族該改扣嗎 不敗教主揭關鍵：沒必要換 - FTNN 新聞網",
-          "url": "https://www.ftnn.com.tw/news/590184",
+          "title": "每月存3000元「該買0050還台積電？」 眾狂推這檔：會感謝自己 - Yahoo新聞",
+          "url": "https://tw.news.yahoo.com/%E6%AF%8F%E6%9C%88%E5%AD%983000%E5%85%83-%E8%A9%B2%E8%B2%B70050%E9%82%84%E5%8F%B0%E7%A9%8D%E9%9B%BB-%E7%9C%BE%E7%8B%82%E6%8E%A8%E9%80%99%E6%AA%94-%E6%9C%83%E6%84%9F%E8%AC%9D%E8%87%AA%E5%B7%B1-140000583.html",
+          "source": "Yahoo新聞",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "每月存3000元買股「0050、台積電該選誰？」 全場答案一面倒 - TVBS新聞網",
+          "url": "https://news.tvbs.com.tw/money/4041650",
+          "source": "TVBS新聞網",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "退休族該買0050還是0056？財經專家親曝實測「資產差逾360萬」 網嘆：安心的代價 - FTNN 新聞網",
+          "url": "https://www.ftnn.com.tw/news/590445",
           "source": "FTNN 新聞網",
-          "date": "10-25",
-          "tone": "neu"
-        }
-      ]
-    },
-    {
-      "code": "006208",
-      "name": "富邦台50",
-      "score": 48,
-      "news": 14,
-      "pos": 0,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "00403A、0050、006208…台股ETF績效車拚！這檔領先大盤超抗震，達人讚「兩特質」向上爆發力強 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610210056/",
-          "source": "今周刊",
-          "date": "10-25",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "006208「1拆8」比0050划算？小資族該改扣嗎 不敗教主揭關鍵：沒必要換 - FTNN 新聞網",
-          "url": "https://www.ftnn.com.tw/news/590184",
-          "source": "FTNN 新聞網",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "晚了就不要了？006208終於「1拆8」！一張24萬變3萬元 股民酸：早就轉0050 - FTNN 新聞網",
-          "url": "https://www.ftnn.com.tw/news/590177",
-          "source": "FTNN 新聞網",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "00403A、0050、006208…台股ETF績效車拚！這檔領先大盤超抗震，達人讚「兩特質」向上爆發力強 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610210056/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "整理包／0050 市值型 ETF 王位遭挑戰！006208 一拆八搶市 009804、009816 也來了...四檔買誰好？ - 經濟日報",
-          "url": "https://money.udn.com/money/story/124512/9836458",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "00403A、0050、006208…台股ETF績效車拚！這檔領先大盤超抗震，達人讚「兩特質」向上爆發力強 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610210056/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neu"
-        }
-      ]
-    },
-    {
-      "code": "00981A",
-      "name": "主動統一台股增長",
-      "score": 40,
-      "news": 0,
-      "pos": 0,
-      "neg": 0,
-      "headlines": []
-    },
-    {
-      "code": "2454",
-      "name": "聯發科",
-      "score": 38,
-      "news": 10,
-      "pos": 5,
-      "neg": 1,
-      "headlines": [
-        {
-          "title": "台股重量級法說會登場！聯發科、台達電、聯電上陣 AI需求能變獲利？ - UDN",
-          "url": "https://udn.com/news/story/7251/9836939",
-          "source": "UDN",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "台股重量級法說會登場！聯發科、台達電、聯電上陣 AI 需求能變獲利？ - UDN",
-          "url": "https://udn.com/news/story/7252/9836939",
-          "source": "UDN",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "台股重量級法說會登場！聯發科、台達電、聯電上陣 AI需求能變獲利？ - UDN",
-          "url": "https://udn.com/news/story/7251/9836939",
-          "source": "UDN",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "半導體族群短線承壓，聯發科(2454)創高後獲利能否延續？-子敏左側交易 - CMoney投資網誌",
-          "url": "https://cmnews.com.tw/article/zhengzimin-57fee672-d07d-11f1-ab36-d1c5a811deaa",
-          "source": "CMoney投資網誌",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "台股重量級法說會登場！聯發科、台達電、聯電上陣 AI 需求能變獲利？ - 經濟日報",
-          "url": "https://money.udn.com/money/story/5607/9836939",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "台積電聯電、南亞科聯發科…台股開盤再殺撿誰？16檔外資狂砍、本益比跌回7月股災、KD賣超區「先蹲後跳」 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610240005/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neg"
-        }
-      ]
-    },
-    {
-      "code": "0056",
-      "name": "元大高股息",
-      "score": 27,
-      "news": 7,
-      "pos": 1,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "【零股排行榜】 盤中零股成交量TOP 20｜0050 元大台灣50、0056 元大高股息、2330 台積電、00406A 主動中信台灣收益、00631L 元大台灣50正2 (1022)｜豐雲學堂2026 年 10 月 - 永豐金證券",
-          "url": "https://www.sinotrade.com.tw/richclub/MarketTrends/-%E9%9B%B6%E8%82%A1%E6%8E%92%E8%A1%8C%E6%A6%9C--%E7%9B%A4%E4%B8%AD%E9%9B%B6%E8%82%A1%E6%88%90%E4%BA%A4%E9%87%8FTOP-20-0050-%E5%85%83%E5%A4%A7%E5%8F%B0%E7%81%A350-0056-%E5%85%83%E5%A4%A7%E9%AB%98%E8%82%A1%E6%81%AF-2330-%E5%8F%B0%E7%A9%8D%E9%9B%BB-00406A-%E4%B8%BB%E5%8B%95%E4%B8%AD%E4%BF%A1%E5%8F%B0%E7%81%A3%E6%94%B6%E7%9B%8A-00631L-%E5%85%83%E5%A4%A7%E5%8F%B0%E7%81%A350%E6%AD%A32--1022--6ad9a860e3717e01577cc412",
-          "source": "永豐金證券",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "0056 元大高股息- 估值不到8倍卻跌不停！ - 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186753820",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "0056 元大高股息- 115年9月工業生產統計- 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186745951",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "0056 元大高股息- 115年9月批發、零售及餐飲業營業額統計- 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186745929",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "0056 元大高股息- 美國生技指數創歷史新高，根據疾管署統計：新冠疫情9/1～9/... - 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186744405",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "0056 元大高股息- 🎃 台股萬聖節鬼故事還沒完？季線失守、外資大逃殺😱 - 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186750786",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        }
-      ]
-    },
-    {
-      "code": "00919",
-      "name": "群益台灣精選高息",
-      "score": 25,
-      "news": 6,
-      "pos": 1,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "0056、00919、00927…台股ETF受益人數創高，市值型、高股息選誰？股市老手揭配置比例：不管何時漲都會漲到你的 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183013/post/202610210071/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "0056、00919、00927…台股ETF受益人數創高，市值型、高股息選誰？股市老手揭配置比例：不管何時漲都會漲到你的 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183013/post/202610210071/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "整理包／瑤池金母發錢了！00918、00919 創新高 00981A、00929 等 ETF 9 月配息、最後買進日一次看 - 經濟日報",
-          "url": "https://money.udn.com/money/story/124512/9727308",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "領錢了！台股本周21檔 ETF 發放股利共421億、00919配發207.8億最多 - 經濟日報",
-          "url": "https://money.udn.com/money/story/5618/9807785",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "0056、00919、00927…台股ETF受益人數創高，市值型、高股息選誰？股市老手揭配置比例：不管何時漲都會漲到你的 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183013/post/202610210071/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "0056、00919、00927…台股ETF受益人數創高，市值型、高股息選誰？股市老手揭配置比例：不管何時漲都會漲到你的 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183013/post/202610210071/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neu"
-        }
-      ]
-    },
-    {
-      "code": "2303",
-      "name": "聯電",
-      "score": 24,
-      "news": 6,
-      "pos": 2,
-      "neg": 3,
-      "headlines": [
-        {
-          "title": "台積電聯電、南亞科聯發科…台股開盤再殺撿誰？16檔外資狂砍、本益比跌回7月股災、KD賣超區「先蹲後跳」 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610240005/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neg"
-        },
-        {
-          "title": "台積電聯電、南亞科聯發科…台股開盤再殺撿誰？16檔外資狂砍、本益比跌回7月股災、KD賣超區「先蹲後跳」 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610240005/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neg"
-        },
-        {
-          "title": "台股重量級法說會登場！聯發科、台達電、聯電上陣 AI需求能變獲利？ - UDN",
-          "url": "https://udn.com/news/story/7251/9836939",
-          "source": "UDN",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "台股重量級法說會登場！聯發科、台達電、聯電上陣 AI 需求能變獲利？ - 經濟日報",
-          "url": "https://money.udn.com/money/story/5607/9836939",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "台積電聯電、南亞科聯發科…台股開盤再殺撿誰？16檔外資狂砍、本益比跌回7月股災、KD賣超區「先蹲後跳」 - 今周刊",
-          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610240005/",
-          "source": "今周刊",
-          "date": "10-25",
-          "tone": "neg"
-        },
-        {
-          "title": "2303 聯電 - 趕緊買起來不贏也難 - 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186744441",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        }
-      ]
-    },
-    {
-      "code": "3231",
-      "name": "緯創",
-      "score": 21,
-      "news": 6,
-      "pos": 3,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "3231 緯創- 十月最後一周觀察核心與突破２００魔咒，何來２０６壓力． - 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186754735",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "AI伺服器供應鏈最新財報亮眼！外資賣壓下台股轉向，緯創獲利動能爆發-財經焦點情報站 - CMoney投資網誌",
-          "url": "https://cmnews.com.tw/article/forumnews-894955b2-d0bc-11f1-b612-88a874c3108d",
-          "source": "CMoney投資網誌",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "外資爆賣2356億元！反手狂搶「5檔老黃概念股」破15萬張 緯創Q3營收年增102%獲砸105億元 - FTNN 新聞網",
-          "url": "https://www.ftnn.com.tw/news/590212",
-          "source": "FTNN 新聞網",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "掃貨AI伺服器大廠！主動式ETF增持榜出爐 緯創狂增破萬張、台塑四寶「這2檔」也進榜 - Yahoo股市",
-          "url": "https://tw.stock.yahoo.com/news/%E6%8E%83%E8%B2%A8ai%E4%BC%BA%E6%9C%8D%E5%99%A8%E5%A4%A7%E5%BB%A0-%E4%B8%BB%E5%8B%95%E5%BC%8Fetf%E5%A2%9E%E6%8C%81%E6%A6%9C%E5%87%BA%E7%88%90-%E7%B7%AF%E5%89%B5%E7%8B%82%E5%A2%9E%E7%A0%B4%E8%90%AC%E5%BC%B5-%E5%8F%B0%E5%A1%91%E5%9B%9B%E5%AF%B6-%E9%80%992%E6%AA%94-100000975.html",
-          "source": "Yahoo股市",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "成交值前十名唯一收紅！緯創逆漲5% 外資、投信為何同步加碼？ - 經濟日報",
-          "url": "https://money.udn.com/money/story/5607/9826731",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "AI算力年複合成長70%！「老AI」迎新賽局緯創逆勢勁揚4% 「這幾檔」逆風展現強韌抗跌力 - FTNN 新聞網",
-          "url": "https://www.ftnn.com.tw/news/590138",
-          "source": "FTNN 新聞網",
-          "date": "10-25",
-          "tone": "pos"
-        }
-      ]
-    },
-    {
-      "code": "2603",
-      "name": "長榮",
-      "score": 20,
-      "news": 3,
-      "pos": 1,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "貨櫃運價罕見淡季仍強勢，法國的貨櫃船載了好多長榮的貨櫃 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186750122",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "2603 長榮 - 早安，兩張圖跟大家問候- 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186743280",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "2603 長榮 - 三大法人持股 - 股市爆料同學會 - CMoney",
-          "url": "http://www.cmoney.tw/forum/article/186749826",
-          "source": "CMoney",
-          "date": "10-25",
+          "title": "每月存3000元「該買0050還台積電？」 眾狂推這檔：會感謝自己 | 蔣季容 | 新聞 - 風傳媒",
+          "url": "https://www.storm.mg/article/11175811",
+          "source": "風傳媒",
+          "date": "10-26",
           "tone": "neu"
         }
       ]
@@ -463,196 +111,200 @@
     {
       "code": "2308",
       "name": "台達電",
-      "score": 18,
-      "news": 5,
-      "pos": 1,
-      "neg": 3,
+      "score": 41,
+      "news": 12,
+      "pos": 0,
+      "neg": 1,
       "headlines": [
         {
-          "title": "AI伺服器供應鏈評價修正！台股跌破季線，台達電重挫39%浮現合理價位？-財經焦點情報站 - CMoney投資網誌",
-          "url": "https://cmnews.com.tw/article/forumnews-d845b96c-d096-11f1-a24c-5f649f32c7e7",
-          "source": "CMoney投資網誌",
-          "date": "10-25",
-          "tone": "neg"
-        },
-        {
-          "title": "「台達電股價崩近4成」該進場？陳重銘估明年EPS 60元、再揭合理價 - 三立新聞",
-          "url": "https://inews.setn.com/news/1928379",
-          "source": "三立新聞",
-          "date": "10-25",
-          "tone": "neg"
-        },
-        {
-          "title": "台股重量級法說會登場！聯發科、台達電、聯電上陣 AI 需求能變獲利？ - 經濟日報",
-          "url": "https://money.udn.com/money/story/5607/9836939",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "台達電、友達、光寶談業績 - 經濟日報",
-          "url": "https://money.udn.com/money/story/5612/9835451",
-          "source": "經濟日報",
-          "date": "10-25",
+          "title": "台達電液冷散熱方案 導入日本首座AI貨櫃資料中心 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/dysnw745cpdl",
+          "source": "自由時報",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "「台達電股價崩近4成」該進場? 陳重銘估明年EPS 60元、 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186747471",
-          "source": "CMoney",
-          "date": "10-25",
+          "title": "台達電液冷散熱方案 導入日本首座AI貨櫃資料中心 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/dysnw745cpdl",
+          "source": "自由時報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "台股明開盤震盪？專家曝PCB供應鏈「這5檔」法人偷卡位跌深黑馬聯發科、台達電有望築底撿便宜 - FTNN 新聞網",
+          "url": "https://www.ftnn.com.tw/news/590475",
+          "source": "FTNN 新聞網",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "台股明開盤震盪？分析師曝PCB供應鏈「這5檔」法人偷卡位跌深黑馬聯發科、台達電有望築底撿便宜 - FTNN 新聞網",
+          "url": "https://www.ftnn.com.tw/news/590475",
+          "source": "FTNN 新聞網",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "台達電液冷散熱方案 導入日本首座AI貨櫃資料中心 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/dysnw745cpdl",
+          "source": "自由時報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "台達電液冷散熱方案 導入日本首座AI貨櫃資料中心 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/dysnw745cpdl",
+          "source": "自由時報",
+          "date": "10-26",
+          "tone": "neu"
+        }
+      ]
+    },
+    {
+      "code": "2454",
+      "name": "聯發科",
+      "score": 33,
+      "news": 5,
+      "pos": 0,
+      "neg": 3,
+      "headlines": [
+        {
+          "title": "台積電、聯發科怎麼撿？杜金龍教戰「零股買法」：這檔大跌就買開盤價 - FTNN 新聞網",
+          "url": "https://www.ftnn.com.tw/news/590503",
+          "source": "FTNN 新聞網",
+          "date": "10-26",
           "tone": "neg"
+        },
+        {
+          "title": "台積電、聯發科怎麼撿？杜金龍教戰「零股買法」：這檔大跌就買開盤價 - Yahoo股市",
+          "url": "https://tw.stock.yahoo.com/news/%E5%8F%B0%E7%A9%8D%E9%9B%BB-%E8%81%AF%E7%99%BC%E7%A7%91%E6%80%8E%E9%BA%BC%E6%92%BF-%E6%9D%9C%E9%87%91%E9%BE%8D%E6%95%99%E6%88%B0-%E9%9B%B6%E8%82%A1%E8%B2%B7%E6%B3%95-%E9%80%99%E6%AA%94%E5%A4%A7%E8%B7%8C%E5%B0%B1%E8%B2%B7%E9%96%8B%E7%9B%A4%E5%83%B9-234000347.html",
+          "source": "Yahoo股市",
+          "date": "10-26",
+          "tone": "neg"
+        },
+        {
+          "title": "台股收假迎反彈關鍵？「黃金法說週」登場 台達電、聯發科接力 - TVBS新聞網",
+          "url": "https://news.tvbs.com.tw/money/4041302",
+          "source": "TVBS新聞網",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "台股收假迎反彈關鍵？「黃金法說週」登場 台達電、聯發科接力 - TVBS",
+          "url": "https://tech.tvbs.com.tw/money/4041302",
+          "source": "TVBS",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "台積電聯電、南亞科聯發科…台股開盤再殺撿誰？16檔外資狂砍、本益比跌回7月股災、KD賣超區「先蹲後跳」 - 今周刊",
+          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610240005/",
+          "source": "今周刊",
+          "date": "10-26",
+          "tone": "neg"
+        }
+      ]
+    },
+    {
+      "code": "2317",
+      "name": "鴻海",
+      "score": 30,
+      "news": 10,
+      "pos": 0,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "鴻海(2317) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/2317/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "鴻海(2317) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/2317/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "2317 鴻海 - iPhone Duo螢幕出包鴻海人士：實際生產未受影響- 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186754408",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "2317 鴻海 - DGX POD Partners - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186759219",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "2317 鴻海 - https://youtu.be/sf2yZHtRhOk?s... - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186751980",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "2317 鴻海 - https://youtu.be/Otj9JM5sym4?s... - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186751974",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
         }
       ]
     },
     {
       "code": "1303",
       "name": "南亞",
-      "score": 18,
-      "news": 5,
-      "pos": 2,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "營收創54月新高！AI帶動高階材料升級 南亞明年EPS上看21.36元 - Yahoo新聞",
-          "url": "https://tw.news.yahoo.com/%E7%87%9F%E6%94%B6%E5%89%B554%E6%9C%88%E6%96%B0%E9%AB%98-ai%E5%B8%B6%E5%8B%95%E9%AB%98%E9%9A%8E%E6%9D%90%E6%96%99%E5%8D%87%E7%B4%9A-%E5%8D%97%E4%BA%9E%E6%98%8E%E5%B9%B4eps%E4%B8%8A%E7%9C%8B21-36%E5%85%83-225000569.html",
-          "source": "Yahoo新聞",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "營收創54月新高！AI帶動高階材料升級　南亞明年EPS上看21.36元 - 三立新聞",
-          "url": "https://www.setn.com/news/1928411",
-          "source": "三立新聞",
-          "date": "10-25",
-          "tone": "pos"
-        },
-        {
-          "title": "AI帶動高階材料！南亞明年EPS上看21.36元 - 鏡週刊Mirror Media",
-          "url": "https://www.mirrormedia.mg/external/setn_1928411",
-          "source": "鏡週刊Mirror Media",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "台塑四寶開盤會噴？市場點名「2寶」要小心先別碰 赤裸剖析南亞、台塑化看法曝光 - FTNN 新聞網",
-          "url": "https://www.ftnn.com.tw/news/590112",
-          "source": "FTNN 新聞網",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "三大法人買賣超 – 外資買超(1303)南亞、(1301)台塑，投信買超(2368)金像電、(2330)台積電，法人合計賣超153.97億元 - 永豐金證券",
-          "url": "https://www.sinotrade.com.tw/richclub/MarketTrends/%E4%B8%89%E5%A4%A7%E6%B3%95%E4%BA%BA%E8%B2%B7%E8%B3%A3%E8%B6%85-%E2%80%93-%E5%A4%96%E8%B3%87%E8%B2%B7%E8%B6%85-1303-%E5%8D%97%E4%BA%9E--1301-%E5%8F%B0%E5%A1%91-%E6%8A%95%E4%BF%A1%E8%B2%B7%E8%B6%85-2368-%E9%87%91%E5%83%8F%E9%9B%BB--2330-%E5%8F%B0%E7%A9%8D%E9%9B%BB-%E6%B3%95%E4%BA%BA%E5%90%88%E8%A8%88%E8%B3%A3%E8%B6%85153-97%E5%84%84%E5%85%83--1014--6acf3af7d03a4f0160e8ef77",
-          "source": "永豐金證券",
-          "date": "10-25",
-          "tone": "neu"
-        }
-      ]
-    },
-    {
-      "code": "2002",
-      "name": "中鋼",
-      "score": 17,
-      "news": 5,
+      "score": 28,
+      "news": 8,
       "pos": 1,
-      "neg": 0,
+      "neg": 2,
       "headlines": [
         {
-          "title": "中鋼揪伴攻熱鐵磚商機 潛在投資規模衝250億元 - UDN",
-          "url": "https://udn.com/news/story/7240/9836701",
-          "source": "UDN",
-          "date": "10-25",
+          "title": "《台北股市》三大法人22日賣超股：友達、南亞、國巨* - 富聯網",
+          "url": "https://ww2.money-link.com.tw/RealTimeNews/NewsContent.aspx?SN=6340009001&PU=0010",
+          "source": "富聯網",
+          "date": "10-26",
+          "tone": "neg"
+        },
+        {
+          "title": "個股：南亞(1303)10/23受邀參加台新證券舉辦之法人說明會 - 富聯網",
+          "url": "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?SN=2434860002&PU=0009",
+          "source": "富聯網",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "中鋼揪伴攻熱鐵磚商機 潛在投資規模衝250億元 - 經濟日報",
-          "url": "https://money.udn.com/money/story/10871/9836701",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "中鋼減碳應用 凸顯戰略價值 - UDN",
-          "url": "https://udn.com/news/story/7240/9836703",
-          "source": "UDN",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "中鋼減碳應用 凸顯戰略價值 - 經濟日報",
-          "url": "https://money.udn.com/money/story/10871/9836703",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "連4月獲利 中鋼7月銷量創今年新高 - 自由時報",
-          "url": "https://stock.ltn.com.tw/article/qdbpufmxvavs",
+          "title": "南亞開高走低！盤中翻黑跌破300元 股民哀號 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/fuwsgxhag9np",
           "source": "自由時報",
-          "date": "10-25",
-          "tone": "pos"
-        }
-      ]
-    },
-    {
-      "code": "2412",
-      "name": "中華電",
-      "score": 16,
-      "news": 2,
-      "pos": 1,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "電信費調漲賭氣存股！他靠「對抗中華電信」近20年 滾出新竹買房頭期款 - FTNN 新聞網",
-          "url": "https://www.ftnn.com.tw/news/590114",
-          "source": "FTNN 新聞網",
-          "date": "10-25",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "焦點股》中華電信：小金雞多一隻 股價攻新高 - 自由時報",
-          "url": "https://stock.ltn.com.tw/article/cheqqkjwftx3",
+          "title": "焦點股》南亞：破謠言股價還公道 開盤大漲 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/ayxvq2syrle9",
           "source": "自由時報",
-          "date": "10-25",
+          "date": "10-26",
           "tone": "pos"
-        }
-      ]
-    },
-    {
-      "code": "2884",
-      "name": "玉山金",
-      "score": 16,
-      "news": 4,
-      "pos": 0,
-      "neg": 0,
-      "headlines": [
+        },
         {
-          "title": "兩樁整併將撼動金控資產排名！玉山金進前五 「新國票」脫末座了？ - 經濟日報",
-          "url": "https://money.udn.com/money/story/5613/9725743",
-          "source": "經濟日報",
-          "date": "10-25",
+          "title": "1303 南亞 - 上週賣太多了，不先倒貨壓價，怎麼可低價進貨！相信EPS，相信... - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186771399",
+          "source": "CMoney",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "玉山金(2884) 個股概覽 | 個股 - 股市 - CMoney",
-          "url": "https://www.cmoney.tw/finance/2884/f00025",
+          "title": "1303 南亞 - 南亞甩「鬼故事」漲逾6%急收斂台塑、台化小紅- 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186794697",
           "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "玉山金(2884) 個股概覽 | 個股 - 股市 - CMoney",
-          "url": "https://www.cmoney.tw/finance/2884/f00025",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "玉山金(2884) 個股概覽 | 個股 - 股市 - CMoney",
-          "url": "https://www.cmoney.tw/finance/2884/f00025",
-          "source": "CMoney",
-          "date": "10-25",
+          "date": "10-26",
           "tone": "neu"
         }
       ]
@@ -660,125 +312,202 @@
     {
       "code": "3661",
       "name": "世芯-KY",
-      "score": 14,
+      "score": 28,
+      "news": 9,
+      "pos": 0,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "千金股解密— 世芯-KY 3661 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/e41wmfmzwmmq",
+          "source": "自由時報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "千金股解密— 世芯-KY 3661 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/e41wmfmzwmmq",
+          "source": "自由時報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "千金股解密— 世芯-KY 3661 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/e41wmfmzwmmq",
+          "source": "自由時報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "千金股解密— 世芯-KY 3661 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/e41wmfmzwmmq",
+          "source": "自由時報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "千金股解密— 世芯-KY 3661 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/e41wmfmzwmmq",
+          "source": "自由時報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "千金股解密— 世芯-KY 3661 - 自由時報",
+          "url": "https://stock.ltn.com.tw/article/e41wmfmzwmmq",
+          "source": "自由時報",
+          "date": "10-26",
+          "tone": "neu"
+        }
+      ]
+    },
+    {
+      "code": "2303",
+      "name": "聯電",
+      "score": 27,
+      "news": 9,
+      "pos": 1,
+      "neg": 4,
+      "headlines": [
+        {
+          "title": "《台北股市》投信22日賣超股：聯電、台塑化、緯創 - 富聯網",
+          "url": "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?SN=6340007001&PU=1002",
+          "source": "富聯網",
+          "date": "10-26",
+          "tone": "neg"
+        },
+        {
+          "title": "2303 聯電 - 輝達先進封裝變革中介層變搶手貨聯電、力積電成為當紅炸子雞- 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186757002",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "2303 聯電 - 〈台股風向球〉拚站穩季線多家財報、法說和國際大事集結發- 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186762859",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "台積電聯電、南亞科聯發科…台股開盤再殺撿誰？16檔外資狂砍、本益比跌回7月股災、KD賣超區「先蹲後跳」 - 今周刊",
+          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610240005/",
+          "source": "今周刊",
+          "date": "10-26",
+          "tone": "neg"
+        },
+        {
+          "title": "2303 聯電 - 又跌回甜甜價了，根本給人加碼機會，明天進場買爆😋 - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186751387",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "pos"
+        },
+        {
+          "title": "台積電聯電、南亞科聯發科…台股開盤再殺撿誰？16檔外資狂砍、本益比跌回7月股災、KD賣超區「先蹲後跳」 - 今周刊",
+          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610240005/",
+          "source": "今周刊",
+          "date": "10-26",
+          "tone": "neg"
+        }
+      ]
+    },
+    {
+      "code": "006208",
+      "name": "富邦台50",
+      "score": 19,
+      "news": 7,
+      "pos": 0,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "00403A、0050、006208…台股ETF績效車拚！這檔領先大盤超抗震，達人讚「兩特質」向上爆發力強 - 今周刊",
+          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610210056/",
+          "source": "今周刊",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "整理包／0050 市值型 ETF 王位遭挑戰！006208 一拆八搶市 009804、009816 也來了...四檔買誰好？ - 經濟日報",
+          "url": "https://money.udn.com/money/story/124512/9836458",
+          "source": "經濟日報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "整理包／0050 市值型 ETF 王位遭挑戰！006208 一拆八搶市 009804、009816 也來了...四檔買誰好？ - 經濟日報",
+          "url": "https://money.udn.com/money/story/124512/9836458",
+          "source": "經濟日報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "0050 最強對手終於出招！006208 擬一拆八、近10年績效竟領先？ - Winner | 投資網誌 - 玩股網",
+          "url": "https://www.wantgoo.com/blog/355187/post/103",
+          "source": "玩股網",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "00403A、0050、006208…台股ETF績效車拚！這檔領先大盤超抗震，達人讚「兩特質」向上爆發力強 - 今周刊",
+          "url": "https://www.businesstoday.com.tw/article/category/183008/post/202610210056/",
+          "source": "今周刊",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "006208分割案掀熱議！小資族期待更好入手 股民卻點名：內扣費用才是重點 - Yahoo股市",
+          "url": "https://tw.stock.yahoo.com/news/006208%E5%88%86%E5%89%B2%E6%A1%88%E6%8E%80%E7%86%B1%E8%AD%B0-%E5%B0%8F%E8%B3%87%E6%97%8F%E6%9C%9F%E5%BE%85%E6%9B%B4%E5%A5%BD%E5%85%A5%E6%89%8B-%E8%82%A1%E6%B0%91%E5%8D%BB%E9%BB%9E%E5%90%8D-%E5%85%A7%E6%89%A3%E8%B2%BB%E7%94%A8%E6%89%8D%E6%98%AF%E9%87%8D%E9%BB%9E-020000460.html",
+          "source": "Yahoo股市",
+          "date": "10-26",
+          "tone": "neu"
+        }
+      ]
+    },
+    {
+      "code": "0056",
+      "name": "元大高股息",
+      "score": 12,
       "news": 4,
       "pos": 0,
       "neg": 0,
       "headlines": [
         {
-          "title": "千金股解密— 世芯-KY 3661 - 自由時報",
-          "url": "https://stock.ltn.com.tw/article/e41wmfmzwmmq",
-          "source": "自由時報",
-          "date": "10-25",
+          "title": "退休族該買0050還是0056？財經專家親曝實測「資產差逾360萬」 網嘆：安心的代價 - FTNN 新聞網",
+          "url": "https://www.ftnn.com.tw/news/590445",
+          "source": "FTNN 新聞網",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "千金股解密— 世芯-KY 3661 - 自由時報",
-          "url": "https://stock.ltn.com.tw/article/e41wmfmzwmmq",
-          "source": "自由時報",
-          "date": "10-25",
+          "title": "【零股排行榜】 盤中零股成交量TOP 20｜0050 元大台灣50、0056 元大高股息、2330 台積電、00406A 主動中信台灣收益、00631L 元大台灣50正2 (1022)｜豐雲學堂2026 年 10 月 - 永豐金證券",
+          "url": "https://www.sinotrade.com.tw/richclub/MarketTrends/-%E9%9B%B6%E8%82%A1%E6%8E%92%E8%A1%8C%E6%A6%9C--%E7%9B%A4%E4%B8%AD%E9%9B%B6%E8%82%A1%E6%88%90%E4%BA%A4%E9%87%8FTOP-20-0050-%E5%85%83%E5%A4%A7%E5%8F%B0%E7%81%A350-0056-%E5%85%83%E5%A4%A7%E9%AB%98%E8%82%A1%E6%81%AF-2330-%E5%8F%B0%E7%A9%8D%E9%9B%BB-00406A-%E4%B8%BB%E5%8B%95%E4%B8%AD%E4%BF%A1%E5%8F%B0%E7%81%A3%E6%94%B6%E7%9B%8A-00631L-%E5%85%83%E5%A4%A7%E5%8F%B0%E7%81%A350%E6%AD%A32--1022--6ad9a860e3717e01577cc412",
+          "source": "永豐金證券",
+          "date": "10-26",
           "tone": "neu"
         },
         {
-          "title": "世芯-KY(3661) 個股概覽 | 個股 - 股市 - CMoney",
-          "url": "https://www.cmoney.tw/finance/3661/f00025",
+          "title": "台股修正怎布局？「從0050、0056到主動式00981A」達人教戰終極配置：這樣買最快滾出3萬現金流- 上市櫃 - 旺得富理財網",
+          "url": "https://wantrich.chinatimes.com/news/20261026900075-420101",
+          "source": "旺得富理財網",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "0056 元大高股息- 八檔悍將逾萬人搶上車- 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186756302",
           "source": "CMoney",
-          "date": "10-25",
+          "date": "10-26",
           "tone": "neu"
-        },
-        {
-          "title": "3661 世芯-KY - 精測6510和中華立鼎7926同是中華電信子公司，在此介紹最... - 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186745323",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        }
-      ]
-    },
-    {
-      "code": "2317",
-      "name": "鴻海",
-      "score": 11,
-      "news": 2,
-      "pos": 0,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "鴻海AI伺服器產線再進化 新產品導入拚縮至10週 - 自由時報",
-          "url": "https://stock.ltn.com.tw/article/awujgqlt2akb",
-          "source": "自由時報",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "2317 鴻海 - Meta 調高資本支出下限鴻海、廣達接單動能升溫- 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186744945",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        }
-      ]
-    },
-    {
-      "code": "2891",
-      "name": "中信金",
-      "score": 11,
-      "news": 2,
-      "pos": 0,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "等了32年的大解套中信金大戶持股逼近天花板- 財經 - 中時新聞網",
-          "url": "https://www.chinatimes.com/realtimenews/20261026000007-260410",
-          "source": "中時新聞網",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "金融股逆勢走強，中信金(2891)創高後買盤能否續留？-Momentum 動能沈沈 - CMoney投資網誌",
-          "url": "https://cmnews.com.tw/article/shenyichen-8863102d-d046-11f1-bbaa-163577145a5e",
-          "source": "CMoney投資網誌",
-          "date": "10-25",
-          "tone": "neu"
-        }
-      ]
-    },
-    {
-      "code": "2345",
-      "name": "智邦",
-      "score": 11,
-      "news": 3,
-      "pos": 1,
-      "neg": 0,
-      "headlines": [
-        {
-          "title": "2345 智邦 - 智邦與META ICE CUBE N 的合作OCP - 股市爆料同學會 - CMoney",
-          "url": "https://www.cmoney.tw/forum/article/186747700",
-          "source": "CMoney",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "AI供應鏈進度分化，智邦先創高後續看誰量產-跟著大資走 澤明 - CMoney投資網誌",
-          "url": "https://cmnews.com.tw/article/wangzeming-9cefb865-d07a-11f1-8291-667890ca5fb7",
-          "source": "CMoney投資網誌",
-          "date": "10-25",
-          "tone": "neu"
-        },
-        {
-          "title": "Meta 展示首款液冷網路機櫃 分析師看好智邦將受惠 - 經濟日報",
-          "url": "https://money.udn.com/money/amp/story/5612/9836247",
-          "source": "經濟日報",
-          "date": "10-25",
-          "tone": "pos"
         }
       ]
     },
     {
       "code": "2881",
       "name": "富邦金",
-      "score": 10,
-      "news": 2,
+      "score": 12,
+      "news": 4,
       "pos": 0,
       "neg": 0,
       "headlines": [
@@ -786,17 +515,302 @@
           "title": "富邦金(2881) 個股概覽 | 個股 - 股市 - CMoney",
           "url": "https://www.cmoney.tw/finance/2881/f00025",
           "source": "CMoney",
-          "date": "10-25",
+          "date": "10-26",
           "tone": "neu"
         },
         {
           "title": "富邦金(2881) 個股概覽 | 個股 - 股市 - CMoney",
           "url": "https://www.cmoney.tw/finance/2881/f00025",
           "source": "CMoney",
-          "date": "10-25",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "富邦金(2881) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/2881/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "富邦金(2881) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/2881/f00025",
+          "source": "CMoney",
+          "date": "10-26",
           "tone": "neu"
         }
       ]
+    },
+    {
+      "code": "3008",
+      "name": "大立光",
+      "score": 12,
+      "news": 3,
+      "pos": 0,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "大立光、玉晶光 四檔靚 - UDN",
+          "url": "https://udn.com/news/story/7255/9838235",
+          "source": "UDN",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "大立光、玉晶光 四檔靚 - 經濟日報",
+          "url": "https://money.udn.com/money/story/5739/9838235",
+          "source": "經濟日報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "大立光、玉晶光 四檔靚 - UDN",
+          "url": "https://udn.com/news/story/7255/9838235",
+          "source": "UDN",
+          "date": "10-26",
+          "tone": "neu"
+        }
+      ]
+    },
+    {
+      "code": "1301",
+      "name": "台塑",
+      "score": 11,
+      "news": 4,
+      "pos": 0,
+      "neg": 1,
+      "headlines": [
+        {
+          "title": "1301 台塑- 畜牧廢水變灌溉水 雲林估每年省1.75億噸水相當竹科2年用水量- 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186861986",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "台塑(1301) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/1301/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "1301 台塑 - 1. 期貨（現時刻）： 期貨是 24 小時交易的金融工具，一... - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186750055",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "《台北股市》外資22日賣超股：友達、南亞、台塑 - 富聯網",
+          "url": "https://ww2.money-link.com.tw/RealtimeNews/NewsContent.aspx?SN=6339750001&PU=0010",
+          "source": "富聯網",
+          "date": "10-26",
+          "tone": "neg"
+        }
+      ]
+    },
+    {
+      "code": "2884",
+      "name": "玉山金",
+      "score": 11,
+      "news": 4,
+      "pos": 0,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "玉山金(2884) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/2884/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "玉山金(2884) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/2884/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "玉山金(2884) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/2884/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "玉山金(2884) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/2884/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        }
+      ]
+    },
+    {
+      "code": "2603",
+      "name": "長榮",
+      "score": 10,
+      "news": 3,
+      "pos": 0,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "2603 長榮 - 外資及陸資投資上限的確有49.99限制 - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186881726",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "2603 長榮 - 股市最新爆料，掌握股友們對眾個股股價、技術分析、新聞的第一手... - 股市爆料同學會 - CMoney",
+          "url": "http://www.cmoney.tw/forum/article/186881836",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "2603 長榮 - 26W42長榮週報：長榮越來越少的利息─談企業的資本配置能力- 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186756267",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        }
+      ]
+    },
+    {
+      "code": "00919",
+      "name": "群益台灣精選高息",
+      "score": 9,
+      "news": 3,
+      "pos": 2,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "小編下班聊點錢》00919、00918、00939…填息了沒？熱門ETF成績單一次看 2檔先畢業、5檔「還在補考」 - 旺得富理財網",
+          "url": "https://wantrich.chinatimes.com/news/20261026900007-420401",
+          "source": "旺得富理財網",
+          "date": "10-26",
+          "tone": "pos"
+        },
+        {
+          "title": "小編下班聊點錢》00919、00918、00939…填息了沒？熱門ETF成績單一次看2檔先畢業、5檔「還在補考」 - 基金 - 旺得富理財網",
+          "url": "https://wantrich.chinatimes.com/news/20261026900007-420401",
+          "source": "旺得富理財網",
+          "date": "10-26",
+          "tone": "pos"
+        },
+        {
+          "title": "0056、00919、00927…台股ETF受益人數創高，市值型、高股息選誰？股市老手揭配置比例：不管何時漲都會漲到你的 - 今周刊",
+          "url": "https://www.businesstoday.com.tw/article/category/183013/post/202610210071/",
+          "source": "今周刊",
+          "date": "10-26",
+          "tone": "neu"
+        }
+      ]
+    },
+    {
+      "code": "2882",
+      "name": "國泰金",
+      "score": 9,
+      "news": 3,
+      "pos": 3,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "討論牆| 鉅亨速報- Factset 最新調查：國泰金(2882-TW)EPS預估上修至9.02元，預估目標價為127.1元 - LINE TODAY",
+          "url": "https://today.line.me/tw/v3/posts/list/article/DRj2m0m",
+          "source": "LINE TODAY",
+          "date": "10-26",
+          "tone": "pos"
+        },
+        {
+          "title": "鉅亨速報 - Factset 最新調查：國泰金(2882-TW)EPS預估上修至9.02元，預估目標價為127.1元 - TradingView",
+          "url": "https://tw.tradingview.com/news/cnyes:39c13ba9eacdf:0/",
+          "source": "TradingView",
+          "date": "10-26",
+          "tone": "pos"
+        },
+        {
+          "title": "鉅亨速報 - Factset 最新調查：國泰金(2882-TW)EPS預估上修至9.02元，預估目標價為127.1元 - TradingView",
+          "url": "https://es.tradingview.com/news/cnyes:39c13ba9eacdf:0/",
+          "source": "TradingView",
+          "date": "10-26",
+          "tone": "pos"
+        }
+      ]
+    },
+    {
+      "code": "3034",
+      "name": "聯詠",
+      "score": 8,
+      "news": 3,
+      "pos": 0,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "3034 聯詠- 【本週復盤】三星手機族群分歧，「3檔概念股」下週怎麼看？ - 股市爆料同學會 - CMoney",
+          "url": "https://www.cmoney.tw/forum/article/186753882",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "聯詠(3034) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/3034/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "聯詠(3034) 個股概覽 | 個股 - 股市 - CMoney",
+          "url": "https://www.cmoney.tw/finance/3034/f00025",
+          "source": "CMoney",
+          "date": "10-26",
+          "tone": "neu"
+        }
+      ]
+    },
+    {
+      "code": "2002",
+      "name": "中鋼",
+      "score": 8,
+      "news": 3,
+      "pos": 1,
+      "neg": 0,
+      "headlines": [
+        {
+          "title": "中鋼、燁輝 迎鋼市旺季 - 經濟日報",
+          "url": "https://money.udn.com/money/story/5607/9838146",
+          "source": "經濟日報",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "中鋼、燁輝 迎鋼市旺季 - UDN",
+          "url": "https://udn.com/news/story/7252/9838146",
+          "source": "UDN",
+          "date": "10-26",
+          "tone": "neu"
+        },
+        {
+          "title": "9月營收衝28個月高！中鋼持3大利多齊發獲三大法人力挺48億元奪冠「這檔」攜Verda搶全球AI商機受矚 - FTNN 新聞網",
+          "url": "https://www.ftnn.com.tw/news/590419",
+          "source": "FTNN 新聞網",
+          "date": "10-26",
+          "tone": "pos"
+        }
+      ]
+    },
+    {
+      "code": "00981A",
+      "name": "主動統一台股增長",
+      "score": 6,
+      "news": 0,
+      "pos": 0,
+      "neg": 0,
+      "headlines": []
     }
   ]
 }
